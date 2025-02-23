@@ -1,35 +1,7 @@
 import { useState } from "react";
-// import { Loader } from '@/components/Loader'
+import { Loader } from "@/components/Loader";
 import { PdfForm } from "@/features/gas/PdfForm";
 import { createFileRoute } from "@tanstack/react-router";
-
-// import { z } from 'zod'
-// import { pdfFormSchema } from '@/features/gas/pdfFormSchema'
-// import { format } from "date-fns"
-
-// import {
-//   Table,
-//   TableBody,
-//   TableCaption,
-//   TableCell,
-//   TableHead,
-//   TableHeader,
-//   TableRow,
-// } from "@/components/ui/table"
-// import { pdfParser } from '@/features/dave/pdf'
-
-// type Values = z.infer<typeof pdfFormSchema>
-// type DataTable = {
-//   id: string
-//   tradeDate: string
-//   flowDate: string
-//   precio: number
-//   indice: string
-//   fuente: string
-//   fechaCreacion: Date | string
-//   fechaActualizacion: Date | string
-//   usuario: 'David' | 'Juan' | 'Edgar' | 'Becario' | undefined
-// }
 
 import {
 	Select,
@@ -41,11 +13,11 @@ import {
 import { ExcelForm } from "@/features/gas/ExcelForm";
 
 export const Route = createFileRoute("/price")({
+	pendingComponent: Loader,
 	component: RouteComponent,
 });
 
 function RouteComponent() {
-	// const [showTable, setShowTable] = useState(false)
 	const [selectForm, setSelectForm] = useState("pdf");
 
 	return (
