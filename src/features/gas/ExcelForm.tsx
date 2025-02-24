@@ -8,7 +8,6 @@ import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { getExcelData } from "./excel";
 import { es } from "date-fns/locale";
-// import {isDayPickerDefault}  from "react-day-picker";
 
 import { Input } from "@/components/ui/input";
 
@@ -55,13 +54,11 @@ export const ExcelForm = () => {
 		};
 
 		const result = await getExcelData(excel, newValues);
-		// console.log([result[0], result[1]]);
 		fetch("http://127.0.0.1:5000/api/v1/gas", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 			},
-			// body: JSON.stringify([result[0], result[1]]),
 			body: JSON.stringify(result),
 		})
 			.then((response) => response.json())
@@ -105,7 +102,7 @@ export const ExcelForm = () => {
 											{field.value ? (
 												format(field.value, "dd/MM/yyyy")
 											) : (
-												<span>Elige una fecha</span>
+												<span>{format(new Date(), "dd/MM/yyyy")}</span>
 											)}
 											<CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
 										</Button>

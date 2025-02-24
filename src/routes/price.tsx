@@ -18,7 +18,7 @@ export const Route = createFileRoute("/price")({
 });
 
 function RouteComponent() {
-	const [selectForm, setSelectForm] = useState("pdf");
+	const [selectForm, setSelectForm] = useState("excel");
 
 	return (
 		<>
@@ -34,40 +34,6 @@ function RouteComponent() {
 			</Select>
 
 			{selectForm === "pdf" ? <PdfForm /> : <ExcelForm />}
-
-			{/* {showTable
-        ?
-        <Table>
-          <TableCaption>A list of your recent invoices.</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]">tradeDate</TableHead>
-              <TableHead>FlowDate</TableHead>
-              <TableHead>Precio</TableHead>
-              <TableHead>Indice</TableHead>
-              <TableHead>Fuente</TableHead>
-              <TableHead>FechaCreacion</TableHead>
-              <TableHead>FechaActualizacion</TableHead>
-              <TableHead>Usuario</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {dataTable.map((data) => (
-              <TableRow key={data.id}>
-                <TableCell className="font-medium">{data.tradeDate}</TableCell>
-                <TableCell>{data.flowDate}</TableCell>
-                <TableCell>{data.precio}</TableCell>
-                <TableCell>{data.indice}</TableCell>
-                <TableCell>{data.fuente}</TableCell>
-                <TableCell>{JSON.stringify(data.fechaCreacion)}</TableCell>
-                <TableCell>{JSON.stringify(data.fechaActualizacion)}</TableCell>
-                <TableCell className="text-right">{data.usuario}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        : null
-      } */}
 		</>
 	);
 }
