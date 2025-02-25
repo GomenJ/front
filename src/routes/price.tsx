@@ -10,7 +10,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { ExcelForm } from "@/features/gas/ExcelForm";
+import { ExcelForm } from "@/features/gas/components/ExcelForm";
 
 export const Route = createFileRoute("/price")({
 	pendingComponent: Loader,
@@ -24,7 +24,7 @@ function RouteComponent() {
 		<>
 			<h1 className="text-center text-4xl my-5">Cotizadora de Gas</h1>
 			<Select value={selectForm} onValueChange={setSelectForm}>
-				<SelectTrigger className="w-[180px]">
+				<SelectTrigger className="w-[180px] mb-10">
 					<SelectValue placeholder="File" />
 				</SelectTrigger>
 				<SelectContent>

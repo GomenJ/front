@@ -1,12 +1,11 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
-import { excelFormSchema } from "./excelFormSchema";
+import { excelFormSchema } from "../schemas/excelFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
-import { getExcelData } from "./excel";
 import { es } from "date-fns/locale";
 
 import { Input } from "@/components/ui/input";
@@ -25,45 +24,35 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+// import { getDataFromExcel } from "./utils/excel-data-extractor";
+import { useCreateExcelData } from "../hooks/useCreateExcelData";
 
 export const ExcelForm = () => {
 	// 1. Define your form.
 	const form = useForm<z.infer<typeof excelFormSchema>>({
 		resolver: zodResolver(excelFormSchema),
 		defaultValues: {
-			usuario: "Becario",
-			// tradeDate: '',
+			usuario: "",
 			tradeDate: "",
 			excel: "",
 		},
 	});
 
+	const { mutate, isCreating } = useCreateExcelData(form);
+
 	// 2. Define a submit handler.
 	async function onSubmit(values: z.infer<typeof excelFormSchema>) {
 		// Do something with the form values.
 		// ✅ This will be type-safe and validated.
-		console.log(values);
-		// const tradeDate = format(values.tradeDate, "yyyy/MM/dd");
-		const tradeDate = format(values.tradeDate, "yyyy/MM/dd");
-		console.log(tradeDate);
-		const excel = values.excel as File;
+		const tradeDate = format(values.tradeDate, "yyyy-MM-dd");
+		const file = values.excel as File;
 
 		const newValues = {
 			usuario: values.usuario,
-			tradeDate: tradeDate.replaceAll("/", "-"),
+			tradeDate: tradeDate,
 		};
 
-		const result = await getExcelData(excel, newValues);
-		fetch("http://127.0.0.1:5000/api/v1/gas", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(result),
-		})
-			.then((response) => response.json())
-			.then((data) => console.log(data))
-			.catch((error) => console.error("Error:", error));
+		mutate({ file, values: newValues });
 	}
 
 	return (
@@ -74,9 +63,13 @@ export const ExcelForm = () => {
 					name="usuario"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Username</FormLabel>
+							<FormLabel>Usuario</FormLabel>
 							<FormControl>
-								<Input placeholder="shadcn" {...field} />
+								<Input
+									placeholder="Mario Santome"
+									{...field}
+									disabled={isCreating}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -88,7 +81,7 @@ export const ExcelForm = () => {
 					name="tradeDate"
 					render={({ field }) => (
 						<FormItem className="flex flex-col">
-							<FormLabel>TradeDate</FormLabel>
+							<FormLabel>Trade date</FormLabel>
 							<Popover>
 								<PopoverTrigger asChild>
 									<FormControl>
@@ -98,6 +91,7 @@ export const ExcelForm = () => {
 												"w-[240px] pl-3 text-left font-normal",
 												!field.value && "text-muted-foreground",
 											)}
+											disabled={isCreating}
 										>
 											{field.value ? (
 												format(field.value, "dd/MM/yyyy")
@@ -128,10 +122,11 @@ export const ExcelForm = () => {
 					name="excel"
 					render={() => (
 						<FormItem>
-							<FormLabel>trade date</FormLabel>
+							<FormLabel>Archivo Excel</FormLabel>
 							<FormControl>
 								<Input
 									type="file"
+									disabled={isCreating}
 									onChange={(e) => {
 										const files = e.target.files;
 										if (files) {
