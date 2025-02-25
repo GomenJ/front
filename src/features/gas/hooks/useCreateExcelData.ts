@@ -6,7 +6,7 @@ import type { Values } from "../types/priceTypes";
 
 type Form = UseFormReturn<
 	{
-		usuario: string;
+		usuario: "Becario" | "Edgar" | "Dave" | "";
 		tradeDate: string | Date;
 		excel: string | File;
 	},
