@@ -1,28 +1,27 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { createDataFromExcel } from "../api/create-data-from-excel";
 import type { UseFormReturn } from "react-hook-form";
-import type { Values } from "../types/priceTypes";
+import { createDataFromPdf } from "../api/create-data-from-pdf";
 
 type Form = UseFormReturn<
 	{
-		usuario: "Becario" | "Edgar" | "Dave" | "";
 		tradeDate: string | Date;
-		excel: string | File;
+		usuario: "" | "Becario" | "Edgar" | "Dave";
+		pdf1: string | File;
+		pdf2: string | File;
 	},
 	unknown,
 	undefined
 >;
 
-export const useCreateExcelData = (form: Form) => {
+export const useCreatePDFData = (form: Form) => {
 	const queryClient = useQueryClient();
 
 	const { mutate, isPending: isCreating } = useMutation({
-		mutationFn: ({ file, values }: { file: File; values: Values }) =>
-			createDataFromExcel({ file, values }),
+		mutationFn: createDataFromPdf,
 		onSuccess: () => {
 			queryClient.invalidateQueries({
-				queryKey: ["excelData"],
+				queryKey: ["pdfData"],
 			});
 			toast.success("Inserción de datos correcta");
 			document.querySelectorAll("input").forEach((input) => {

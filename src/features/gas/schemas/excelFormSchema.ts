@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 export const excelFormSchema = z.object({
-	// usuario: z.string().nonempty(),
 	usuario: z
 		.enum(["Becario", "Edgar", "Dave", ""], {
 			message: "Usuario no valido",

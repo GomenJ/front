@@ -1,15 +1,13 @@
 import { getDataFromExcel } from "../utils/excel-data-extractor";
 import type { Values } from "../types/priceTypes";
 
-export const createData = async ({
+export const createDataFromExcel = async ({
 	file,
 	values,
 }: {
 	file: File;
 	values: Values;
 }) => {
-	console.log("file", file);
-	console.log("values", values);
 	const excelData = await getDataFromExcel(file, values);
 	const data = await fetch("http://127.0.0.1:5000/api/v1/gas", {
 		method: "POST",

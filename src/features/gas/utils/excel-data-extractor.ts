@@ -1,13 +1,15 @@
 import { format } from "date-fns";
 import * as XLSX from "xlsx";
 import type { Values } from "../types/priceTypes.ts";
+import { formatStringtoDate } from "./format-string-to-date.ts";
 
 type RowInfo = {
 	name: RowName;
 	sheetName: string;
 	index: string;
 };
-type Data = {
+
+export type Data = {
 	tradeDate: string;
 	flowDate: string;
 	indice: string;
@@ -99,13 +101,6 @@ export const getDataFromExcel = async (file: File, values: Values) => {
 		dataBaseData.push(...createExcelData(row.index, values, rowInfo));
 	});
 	return dataBaseData;
-};
-
-const formatStringtoDate = (dateString: string): string => {
-	const [month, year] = dateString.split("-");
-	if (!month || !year) return "";
-	const date = new Date(`1 ${month} ${year}`);
-	return format(date, "yyyy-MM-dd");
 };
 
 const createExcelData = (
