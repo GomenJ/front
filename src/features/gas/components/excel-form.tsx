@@ -138,7 +138,9 @@ export const ExcelForm = () => {
 						</FormItem>
 					)}
 				/>
-				<Button type="submit">Submit</Button>
+				<Button type="submit" disabled={isCreating}>
+					Submit
+				</Button>
 			</form>
 		</Form>
 	);

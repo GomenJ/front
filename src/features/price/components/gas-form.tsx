@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-// import {Check, Che} rom
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { cn } from "@/lib/utils";
@@ -8,7 +7,6 @@ import { es } from "date-fns/locale";
 import { useQuery } from "@tanstack/react-query";
 
 import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
-// import { toast } from "@/components/hooks/use-toast"
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import {
@@ -42,60 +40,15 @@ import {
 	CommandList,
 } from "@/components/ui/command";
 
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableCaption,
-	TableHeader,
-	TableHead,
-	TableRow,
-} from "@/components/ui/table";
-
 import { Input } from "@/components/ui/input";
-import { gasFormSchema, step2GasFormSchema } from "./gasFormSchema";
+import { gasFormSchema, step2GasFormSchema } from "../schemas/gasFormSchema";
 import { useState } from "react";
 import { Modal } from "@/components/Modal";
-import { PricingModal } from "../gas/PricingModal";
-
-const fetchDates = async (fieldValue: string) => {
-	if (!fieldValue) return []; // Prevent unnecessary requests
-
-	const response = await fetch(
-		`http://127.0.0.1:5000/api/v1/gas/${fieldValue}`,
-	);
-
-	if (!response.ok) {
-		console.error(
-			"Error fetching dates:",
-			response.status,
-			response.statusText,
-		);
-		return []; // Return empty array to prevent crashes
-	}
-
-	const data = await response.json();
-	const { availableDates } = data;
-	return availableDates;
-};
-
-const fetchGasData = async ({
-	indice,
-	tradeDate,
-}: {
-	indice: string;
-	tradeDate: string;
-}) => {
-	const response = await fetch(
-		`http://127.0.0.1:5000/api/v1/gas/${indice}/${tradeDate}`,
-	);
-	if (!response.ok) {
-		console.error("Error fetching gas data:", response.statusText);
-		return [];
-	}
-	const data = await response.json();
-	return data;
-};
+import { PricingModal } from "./pricing-modal";
+import { getDates } from "../api/get-dates";
+import { getGasData } from "../api/get-gas-data";
+import { GasTable } from "./gas-table";
+import { disableDays } from "../utils/disable-days";
 
 export const GasForm = () => {
 	// Fetch dates when selectedField changes
@@ -129,31 +82,22 @@ export const GasForm = () => {
 	// Fetch dates when selectedField changes
 	const { data: availableDates, isLoading } = useQuery({
 		queryKey: ["availableDates", selectedField],
-		queryFn: () => fetchDates(selectedField!),
+		queryFn: () => getDates(selectedField!),
 		enabled: !!selectedField, // Prevents execution when null
 	});
 
 	// Fetch dates when selectedField changes
 	const { data } = useQuery({
 		queryKey: ["gasData", gasData],
-		queryFn: () => fetchGasData(gasData!),
+		queryFn: () => getGasData(gasData!),
 		enabled: !!gasData, // Prevents execution when null
 	});
-	// console.log("data", data);
-
-	const disableDays = (day: Date) => {
-		if (!availableDates && availableDates.length === 0) return false;
-		const date = format(day.toLocaleDateString(), "yyyy-MM-dd");
-		return !availableDates.includes(date);
-	};
 
 	// 2. Define a submit handler.
 	function onSubmit(values: z.infer<typeof gasFormSchema>) {
-		// Do something with the form values.
 		// ✅ This will be type-safe and validated.
-		// console.log(values.tradeDate);
 		const tradeDate = format(values.tradeDate, "yyyy-MM-dd");
-		// console.log(tradeDate);
+		console.log("values", values);
 		setGasData({
 			indice: values.field,
 			tradeDate,
@@ -161,15 +105,12 @@ export const GasForm = () => {
 	}
 
 	function onSubmitStep2() {
-		// Do something with the form values.
-		// ✅ This will be type-safe and validated.
-		// console.log("onSubmitStep2", values);
 		document.getElementById("modal")?.click();
 	}
 
 	return (
 		<>
-			<div className="flex justify-around mt-10">
+			<div className="mt-10 flex justify-around">
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 						<FormField
@@ -232,10 +173,10 @@ export const GasForm = () => {
 											<Calendar
 												locale={es}
 												mode="single"
-												selected={field.value}
+												selected={field.value as Date}
 												onSelect={field.onChange}
 												className=""
-												disabled={disableDays}
+												disabled={(date) => disableDays(date, availableDates)}
 											/>
 										</PopoverContent>
 									</Popover>
@@ -244,7 +185,7 @@ export const GasForm = () => {
 							)}
 						/>
 
-						<Button type="submit">Calcular</Button>
+						<Button type="submit">Cargar datos</Button>
 					</form>
 				</Form>
 
@@ -252,14 +193,13 @@ export const GasForm = () => {
 					<Form {...step2Form}>
 						<form
 							onSubmit={step2Form.handleSubmit(onSubmitStep2)}
-							// onSubmit={(e) => e.preventDefault()}
 							className="space-y-8"
 						>
 							<FormField
 								control={step2Form.control}
 								name="startDate"
 								render={({ field }) => (
-									<FormItem className="flex flex-row justify-center items-center gap-3">
+									<FormItem className="flex flex-row items-center justify-center gap-3">
 										<FormLabel className="font-semibold">
 											Inicio de la cobertura:
 										</FormLabel>
@@ -307,7 +247,6 @@ export const GasForm = () => {
 																			);
 																			step2Form.setValue("period", "");
 
-																			// const index = data.findIndex(
 																			const index = data.findIndex(
 																				(data) =>
 																					data.flow_date ===
@@ -342,7 +281,7 @@ export const GasForm = () => {
 								control={step2Form.control}
 								name="period"
 								render={({ field }) => (
-									<FormItem className="flex flex-row justify-center items-center gap-3">
+									<FormItem className="flex flex-row items-center justify-center gap-3">
 										<FormLabel className="font-semibold">
 											Periodo de la cobertura:
 										</FormLabel>
@@ -373,33 +312,39 @@ export const GasForm = () => {
 													/>
 													<CommandList>
 														<CommandEmpty>
-															Este periodo sobre pasa las fechas disponibles
+															No se puede seleccionar un periodo para esta fecha
 														</CommandEmpty>
 														<CommandGroup>
 															{invoiceArray &&
-																invoiceArray.map((_, index) => {
-																	// if (index === 0) return;
-																	return (
-																		<CommandItem
-																			value={String(index)}
-																			onSelect={() => {
-																				step2Form.setValue(
-																					"period",
-																					String(index),
-																				);
-																			}}
-																		>
-																			{index + 1}
-																			<Check
-																				className={cn(
-																					"ml-auto",
-																					String(index) === field.value
-																						? "opacity-100"
-																						: "opacity-0",
-																				)}
-																			/>
-																		</CommandItem>
-																	);
+																invoiceArray.map((invoice, index) => {
+																	if (
+																		index === 5 ||
+																		index === 11 ||
+																		index === 17 ||
+																		index === 23
+																	) {
+																		return (
+																			<CommandItem
+																				value={invoice.flow_date}
+																				onSelect={() => {
+																					step2Form.setValue(
+																						"period",
+																						String(index),
+																					);
+																				}}
+																			>
+																				{index + 1}
+																				<Check
+																					className={cn(
+																						"ml-auto",
+																						String(index) === field.value
+																							? "opacity-100"
+																							: "opacity-0",
+																					)}
+																				/>
+																			</CommandItem>
+																		);
+																	}
 																})}
 														</CommandGroup>
 													</CommandList>
@@ -415,7 +360,7 @@ export const GasForm = () => {
 								control={step2Form.control}
 								name="volume"
 								render={({ field }) => (
-									<FormItem className="flex flex-row justify-center items-center gap-3">
+									<FormItem className="flex flex-row items-center justify-center gap-3">
 										<FormLabel className="font-semibold">Volumen:</FormLabel>
 										<FormControl>
 											<Input
@@ -434,7 +379,7 @@ export const GasForm = () => {
 								control={step2Form.control}
 								name="clientName"
 								render={({ field }) => (
-									<FormItem className="flex flex-row justify-center items-center gap-3">
+									<FormItem className="flex flex-row items-center justify-center gap-3">
 										<FormLabel className="font-semibold">
 											Nombre del cliente:
 										</FormLabel>
@@ -473,31 +418,7 @@ export const GasForm = () => {
 				</Modal>
 			</div>
 
-			{data && data.length > 0 ? (
-				<Table>
-					<TableCaption>A list of your recent invoices.</TableCaption>
-					<TableHeader>
-						<TableRow>
-							<TableHead className="w-[100px]">tradeDate</TableHead>
-							<TableHead>FlowDate</TableHead>
-							<TableHead>Indice</TableHead>
-							<TableHead>Price</TableHead>
-						</TableRow>
-					</TableHeader>
-					<TableBody>
-						{data.map((data) => (
-							<TableRow key={crypto.randomUUID()}>
-								<TableCell className="font-medium">
-									{format(data.trade_date, "dd/MM/yy")}
-								</TableCell>
-								<TableCell>{format(data.flow_date, "MMM-yy")}</TableCell>
-								<TableCell>{`${data.hh_indice}x${data.selected_indice}`}</TableCell>
-								<TableCell>{data.total_precio}</TableCell>
-							</TableRow>
-						))}
-					</TableBody>
-				</Table>
-			) : null}
+			{data && data.length > 0 ? <GasTable data={data} /> : null}
 		</>
 	);
 };

@@ -6,9 +6,9 @@ import { Toaster } from "@/components/ui/sonner";
 export const Route = createRootRoute({
 	component: () => (
 		<>
-			<div className="flex gap-2 h-dvh overflow-hidden w-full">
+			<div className="flex h-dvh w-full gap-2 overflow-hidden dark:bg-gray-900">
 				<Sidebar />
-				<main className="flex-1 overflow-scroll hide-scrollbar mx-10">
+				<main className="hide-scrollbar mx-10 flex-1 overflow-scroll">
 					<Outlet />
 					<Toaster richColors position="top-center" />
 				</main>

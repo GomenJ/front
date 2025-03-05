@@ -22,6 +22,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+
 import {
 	Form,
 	FormControl,
@@ -36,21 +37,44 @@ import {
 	CommandEmpty,
 	CommandGroup,
 	CommandInput,
-	// CommandItem,
+	CommandItem,
 	CommandList,
 } from "@/components/ui/command";
 
 import { Input } from "@/components/ui/input";
-// import { useState } from "react";
-// import { Modal } from "@/components/Modal";
-// import { PricingModal } from "./pricing-modal";
-// import { disableDays } from "../utils/disable-days";
+import { useState } from "react";
 
 import { cotizadoraGasFormSchema } from "../schemas/cotizadora-gas-form-schema";
 import { useCotizadoraStore } from "../stores/cotizadora-store";
+import { getDates } from "../api/get-dates";
+import { disableDays } from "../utils/disable-days";
+import { getGasData } from "../api/get-gas-data";
+import { CotizadoraGas } from "../types/cotizadora-gas-type";
+import { useAuthStore } from "@/stores/auth-store";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useFeeQuery } from "../hooks/useFeeQuery";
 
-export const CotizadoraGasForm = () => {
+type CotizadoraGasFormProps = {
+	handleNextStep: () => void;
+};
+
+export const CotizadoraGasForm = ({
+	handleNextStep,
+}: CotizadoraGasFormProps) => {
+	const [selectedField, setSelectedField] = useState<string | null>(null);
 	const formValues = useCotizadoraStore((state) => state);
+	const [comision, setComision] = useState(false);
+	const user = useAuthStore((state) => state.user);
+	// const [fee, setFee] = useState<number | null>(formValues?.fee?.fee);
+	const [invoiceArray, setInvoiceArray] = useState<CotizadoraGas[]>(
+		formValues.data || [],
+	);
+	const { mutate, isGettingFee } = useFeeQuery();
+	const [gasData, setGasData] = useState<{
+		indice: string;
+		tradeDate: string;
+	} | null>(null);
+
 	const setCotizadoraValues = useCotizadoraStore(
 		(state) => state.setCotizadoraValues,
 	);
@@ -61,27 +85,57 @@ export const CotizadoraGasForm = () => {
 		defaultValues: {
 			index: formValues.index,
 			tradeDate: formValues.tradeDate,
-			startDate: formValues.startDate,
+			startDate: formValues.startDate || "",
 			period: formValues.period,
 			volume: formValues.volume,
 			clientName: formValues.clientName,
+			comision: false,
+			percantage: "0",
 		},
 	});
 
-	console.log("formValues", formValues);
+	// Fetch dates when selectedField changes
+	const { data: availableDates, isLoading } = useQuery({
+		queryKey: ["availableDates", selectedField],
+		queryFn: () => getDates(selectedField!),
+		enabled: !!selectedField, // Prevents execution when null
+		refetchOnWindowFocus: false, // Prevents refetching when the tab is focused
+		refetchOnReconnect: false, // Prevents refetching when the internet reconnects
+		refetchOnMount: false, // Prevents refetching when the component mounts
+	});
+
+	const { data } = useQuery({
+		queryKey: ["gasData"],
+		queryFn: () => getGasData(gasData!),
+		enabled: !!gasData,
+		refetchOnWindowFocus: false, // Prevents refetching when the tab is focused
+		refetchOnReconnect: false, // Prevents refetching when the internet reconnects
+		refetchOnMount: false, // Prevents refetching when the component mounts
+	});
+
 	function onSubmit(values: z.infer<typeof cotizadoraGasFormSchema>) {
 		// ✅ This will be type-safe and validated.
-		console.log("values", values);
-		setCotizadoraValues(values);
-		console.log("formValues after submit", formValues);
-	}
+		setCotizadoraValues({ ...formValues, ...values, data: invoiceArray });
+		const months = Number(values.period) + 1;
 
+		mutate(
+			{ volume: Number(values.volume.replaceAll(",", "")), months },
+			{
+				onSuccess: () => {
+					handleNextStep();
+				},
+			},
+		);
+		// if (!isGettingFee) {
+		// 	handleNextStep();
+		// }
+	}
 	return (
 		<>
 			<Form {...form}>
 				<form
 					onSubmit={form.handleSubmit(onSubmit)}
-					className="grid place-content-center space-y-8"
+					className="mx-auto grid w-1/3 space-y-4 md:min-w-40"
 				>
 					<FormField
 						control={form.control}
@@ -92,7 +146,13 @@ export const CotizadoraGasForm = () => {
 								<Select
 									onValueChange={(value) => {
 										field.onChange(value);
-										// setSelectedField(value); // Trigger fetch
+										setSelectedField(value); // Trigger fetch
+										form.setValue("tradeDate", "");
+										form.setValue("startDate", "");
+										form.setValue("period", "");
+										form.setValue("volume", "");
+										form.setValue("clientName", "");
+										setGasData(null);
 									}}
 								>
 									<FormControl>
@@ -127,7 +187,7 @@ export const CotizadoraGasForm = () => {
 													"pl-3 text-left font-normal",
 													!field.value && "text-muted-foreground",
 												)}
-												// disabled={!selectedField || isLoading} // Disable when fetching
+												disabled={!selectedField || isLoading} // Disable when fetching
 											>
 												{field.value ? (
 													format(field.value, "dd/MM/yyyy")
@@ -143,9 +203,17 @@ export const CotizadoraGasForm = () => {
 											locale={es}
 											mode="single"
 											selected={field.value as Date}
-											onSelect={field.onChange}
+											onSelect={(e) => {
+												field.onChange(e);
+												setGasData({
+													indice: form.getValues("index"),
+													tradeDate: format(e as Date, "yyyy-MM-dd"),
+												});
+											}}
 											className=""
-											// disabled={(date) => disableDays(date, availableDates)}
+											disabled={(date) =>
+												disableDays(date, availableDates, user)
+											}
 										/>
 									</PopoverContent>
 								</Popover>
@@ -153,13 +221,14 @@ export const CotizadoraGasForm = () => {
 							</FormItem>
 						)}
 					/>
+
 					<FormField
 						control={form.control}
 						name="startDate"
 						render={({ field }) => (
 							<FormItem>
 								<FormLabel className="font-semibold">
-									Inicio de la cobertura:
+									Inicio de la cobertura
 								</FormLabel>
 								<Popover>
 									<PopoverTrigger asChild>
@@ -168,24 +237,26 @@ export const CotizadoraGasForm = () => {
 												variant="outline"
 												role="combobox"
 												className={cn(
-													"w-[200px] justify-between",
+													"justify-between",
 													!field.value && "text-muted-foreground",
 												)}
-												// disabled={!data}
+												disabled={!form.getValues("tradeDate")}
 											>
-												{/* {field.value && data */}
-												{/* 	? format( */}
-												{/* 			data.find( */}
-												{/* 				(data) => data.flow_date === field.value, */}
-												{/* 			)?.flow_date, */}
-												{/* 			"MMM-yy", */}
-												{/* 		) */}
-												{/* 	: "Elige una fecha"} */}
+												{field.value && data
+													? format(
+															data.find(
+																(data) =>
+																	data.flow_date ===
+																	(field.value as unknown as Date),
+															)?.flow_date || "",
+															"MMM-yy",
+														)
+													: "Elige una fecha"}
 												<ChevronsUpDown className="opacity-50" />
 											</Button>
 										</FormControl>
 									</PopoverTrigger>
-									<PopoverContent className="w-[200px] p-0">
+									<PopoverContent className="p-0">
 										<Command>
 											<CommandInput
 												placeholder="Search framework..."
@@ -194,37 +265,35 @@ export const CotizadoraGasForm = () => {
 											<CommandList>
 												<CommandEmpty>Fecha no encontrada</CommandEmpty>
 												<CommandGroup>
-													{/* {data && */}
-													{/* 	data.map((dattum) => ( */}
-													{/* 		<CommandItem */}
-													{/* 			value={dattum.flow_date} */}
-													{/* 			onSelect={() => { */}
-													{/* 				form.setValue( */}
-													{/* 					"startDate", */}
-													{/* 					dattum.flow_date, */}
-													{/* 				); */}
-													{/* 				form.setValue("period", ""); */}
-													{/**/}
-													{/* 				const index = data.findIndex( */}
-													{/* 					(data) => */}
-													{/* 						data.flow_date === */}
-													{/* 						step2Form.getValues("startDate"), */}
-													{/* 				); */}
-													{/**/}
-													{/* 				setInvoiceArray([...data.slice(index)]); */}
-													{/* 			}} */}
-													{/* 		> */}
-													{/* 			{format(dattum.flow_date, "MMM-yy")} */}
-													{/* 			<Check */}
-													{/* 				className={cn( */}
-													{/* 					"ml-auto", */}
-													{/* 					dattum.flow_date === field.value */}
-													{/* 						? "opacity-100" */}
-													{/* 						: "opacity-0", */}
-													{/* 				)} */}
-													{/* 			/> */}
-													{/* 		</CommandItem> */}
-													{/* 	))} */}
+													{data &&
+														data.map((dattum) => (
+															<CommandItem
+																key={crypto.randomUUID()}
+																value={dattum.flow_date as unknown as string}
+																onSelect={() => {
+																	form.setValue("startDate", dattum.flow_date);
+																	form.setValue("period", "");
+
+																	const index = data.findIndex(
+																		(data) =>
+																			data.flow_date ===
+																			form.getValues("startDate"),
+																	);
+
+																	setInvoiceArray([...data.slice(index)]);
+																}}
+															>
+																{format(dattum.flow_date, "MMM-yy")}
+																<Check
+																	className={cn(
+																		"ml-auto",
+																		dattum.flow_date === field.value
+																			? "opacity-100"
+																			: "opacity-0",
+																	)}
+																/>
+															</CommandItem>
+														))}
 												</CommandGroup>
 											</CommandList>
 										</Command>
@@ -241,7 +310,7 @@ export const CotizadoraGasForm = () => {
 						render={({ field }) => (
 							<FormItem>
 								<FormLabel className="font-semibold">
-									Periodo de la cobertura:
+									Periodo de la cobertura (meses)
 								</FormLabel>
 								<Popover>
 									<PopoverTrigger asChild>
@@ -250,60 +319,59 @@ export const CotizadoraGasForm = () => {
 												variant="outline"
 												role="combobox"
 												className={cn(
-													"w-[200px] justify-between",
+													"justify-between",
 													!field.value && "text-muted-foreground",
 												)}
-												// disabled={invoiceArray.length === 0}
+												disabled={!form.getValues("tradeDate")}
 											>
-												{/* {field.value && invoiceArray.length > 0 */}
-												{/* 	? Number(field?.value) + 1 */}
-												{/* 	: "Elige el periodo"} */}
+												{field.value && invoiceArray.length > 0
+													? Number(field?.value) + 1
+													: "Elige el periodo de meses"}
 												<ChevronsUpDown className="opacity-50" />
 											</Button>
 										</FormControl>
 									</PopoverTrigger>
-									<PopoverContent className="w-[200px] p-0">
+									<PopoverContent className="p-0">
 										<Command>
 											<CommandInput
 												placeholder="Busca los periodos..."
 												className="h-9"
 											/>
-											<CommandList>
+											<CommandList className="hide-scrollbar">
 												<CommandEmpty>
 													No existe un periodo para esta fecha
 												</CommandEmpty>
 												<CommandGroup>
-													{/* {invoiceArray && */}
-													{/* 	invoiceArray.map((invoice, index) => { */}
-													{/* 		if ( */}
-													{/* 			index === 5 || */}
-													{/* 			index === 11 || */}
-													{/* 			index === 17 || */}
-													{/* 			index === 23 */}
-													{/* 		) { */}
-													{/* 			return ( */}
-													{/* 				<CommandItem */}
-													{/* 					value={invoice.flow_date} */}
-													{/* 					onSelect={() => { */}
-													{/* 						step2Form.setValue( */}
-													{/* 							"period", */}
-													{/* 							String(index), */}
-													{/* 						); */}
-													{/* 					}} */}
-													{/* 				> */}
-													{/* 					{index + 1} */}
-													{/* 					<Check */}
-													{/* 						className={cn( */}
-													{/* 							"ml-auto", */}
-													{/* 							String(index) === field.value */}
-													{/* 								? "opacity-100" */}
-													{/* 								: "opacity-0", */}
-													{/* 						)} */}
-													{/* 					/> */}
-													{/* 				</CommandItem> */}
-													{/* 			); */}
-													{/* 		} */}
-													{/* 	})} */}
+													{invoiceArray &&
+														invoiceArray.map((_, index) => {
+															// if (
+															// 	index === 5 ||
+															// 	index === 11 ||
+															// 	index === 17 ||
+															// 	index === 23
+															// ) {
+															if (index <= 23) {
+																return (
+																	<CommandItem
+																		key={crypto.randomUUID()}
+																		value={String(index + 1)}
+																		onSelect={() => {
+																			form.setValue("period", String(index));
+																		}}
+																	>
+																		{index + 1}
+																		<Check
+																			className={cn(
+																				"ml-auto",
+																				String(index) === field.value
+																					? "opacity-100"
+																					: "opacity-0",
+																			)}
+																		/>
+																	</CommandItem>
+																);
+															}
+														})}
 												</CommandGroup>
 											</CommandList>
 										</Command>
@@ -318,15 +386,18 @@ export const CotizadoraGasForm = () => {
 						control={form.control}
 						name="volume"
 						render={({ field }) => (
-							<FormItem className="flex flex-row items-center justify-center gap-3">
-								<FormLabel className="font-semibold">Volumen:</FormLabel>
+							<FormItem>
+								<FormLabel className="font-semibold">
+									Volumen mensual (MMBTu)
+								</FormLabel>
 								<FormControl>
 									<Input
 										type="text"
 										placeholder="50,000 MMBTu/mes"
 										{...field}
-										// disabled={!data}
+										disabled={!form.getValues("tradeDate")}
 										className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+										autoComplete="off"
 									/>
 								</FormControl>
 								<FormMessage />
@@ -338,15 +409,61 @@ export const CotizadoraGasForm = () => {
 						control={form.control}
 						name="clientName"
 						render={({ field }) => (
-							<FormItem className="flex flex-row items-center justify-center gap-3">
+							<FormItem>
 								<FormLabel className="font-semibold">
-									Nombre del cliente:
+									Nombre del cliente
 								</FormLabel>
 								<FormControl>
 									<Input
-										// disabled={!data}
+										disabled={!form.getValues("tradeDate")}
 										type="text"
-										placeholder="Carolina Performance"
+										placeholder="Luxem Energía"
+										{...field}
+										className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+										autoComplete="off"
+									/>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
+					<FormField
+						control={form.control}
+						name="comision"
+						render={({ field }) => (
+							<FormItem className="flex items-center gap-4">
+								<FormLabel className="font-semibold">
+									¿Requiere comisión?
+								</FormLabel>
+								<FormControl>
+									<Checkbox
+										checked={field.value}
+										onCheckedChange={(e) => {
+											field.onChange(e);
+											setComision(e as boolean);
+										}}
+										className="peer border-primary ring-offset-background focus-visible:ring-ring data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground h-4 h-5 w-4 w-5 shrink-0 rounded-sm border focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+									/>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
+					<FormField
+						control={form.control}
+						name="percantage"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel className="font-semibold">
+									Porcentaje de comisión
+								</FormLabel>
+								<FormControl>
+									<Input
+										type="text"
+										disabled={!comision}
+										placeholder="0"
 										{...field}
 										className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
 									/>
@@ -356,7 +473,13 @@ export const CotizadoraGasForm = () => {
 						)}
 					/>
 
-					<Button type="submit">Calcular</Button>
+					<Button
+						type="submit"
+						className="mb-10 inline self-start"
+						disabled={isGettingFee}
+					>
+						Calcular
+					</Button>
 				</form>
 			</Form>
 		</>

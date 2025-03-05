@@ -1,4 +1,4 @@
-import { GasForm } from "@/features/price/GasForm";
+import { GasForm } from "@/features/price/components/gas-form";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/gas")({

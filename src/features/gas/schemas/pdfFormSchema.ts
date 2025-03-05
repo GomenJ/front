@@ -3,7 +3,6 @@ import { z } from "zod";
 export const pdfFormSchema = z
 	.object({
 		tradeDate: z.union([z.string().date(), z.date()]),
-		// usuario: z.enum(["David", "Juan", "Edgar", "Becario", ""]),
 		usuario: z
 			.enum(["Becario", "Edgar", "Dave", ""], {
 				message: "Usuario no valido",

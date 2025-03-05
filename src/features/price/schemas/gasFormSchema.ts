@@ -17,9 +17,15 @@ export const step2GasFormSchema = z.object({
 	}),
 	volume: z
 		.string()
-		.refine((period) => period.length > 0, {
-			message: "Ingrese un número",
-		})
+		.refine(
+			(volume) => {
+				const newNumber = volume.replace(/,/g, "");
+				return Number(newNumber) > 0;
+			},
+			{
+				message: "Ingrese un número mayor a 0",
+			},
+		)
 		.refine(
 			(period) => {
 				const newNumber = period.replace(/,/g, "");

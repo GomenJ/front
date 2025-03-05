@@ -11,15 +11,18 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as PriceImport } from './routes/price'
+import { Route as LoginImport } from './routes/login'
 import { Route as GasImport } from './routes/gas'
+import { Route as CotizadoraDeGasImport } from './routes/cotizadora-de-gas'
+import { Route as AuthImport } from './routes/_auth'
 import { Route as IndexImport } from './routes/index'
+import { Route as AuthCargarCurvaForwardImport } from './routes/_auth/cargar-curva-forward'
 
 // Create/Update Routes
 
-const PriceRoute = PriceImport.update({
-  id: '/price',
-  path: '/price',
+const LoginRoute = LoginImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -29,10 +32,27 @@ const GasRoute = GasImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const CotizadoraDeGasRoute = CotizadoraDeGasImport.update({
+  id: '/cotizadora-de-gas',
+  path: '/cotizadora-de-gas',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AuthRoute = AuthImport.update({
+  id: '/_auth',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
+} as any)
+
+const AuthCargarCurvaForwardRoute = AuthCargarCurvaForwardImport.update({
+  id: '/cargar-curva-forward',
+  path: '/cargar-curva-forward',
+  getParentRoute: () => AuthRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -46,6 +66,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthImport
+      parentRoute: typeof rootRoute
+    }
+    '/cotizadora-de-gas': {
+      id: '/cotizadora-de-gas'
+      path: '/cotizadora-de-gas'
+      fullPath: '/cotizadora-de-gas'
+      preLoaderRoute: typeof CotizadoraDeGasImport
+      parentRoute: typeof rootRoute
+    }
     '/gas': {
       id: '/gas'
       path: '/gas'
@@ -53,56 +87,105 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GasImport
       parentRoute: typeof rootRoute
     }
-    '/price': {
-      id: '/price'
-      path: '/price'
-      fullPath: '/price'
-      preLoaderRoute: typeof PriceImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
+    }
+    '/_auth/cargar-curva-forward': {
+      id: '/_auth/cargar-curva-forward'
+      path: '/cargar-curva-forward'
+      fullPath: '/cargar-curva-forward'
+      preLoaderRoute: typeof AuthCargarCurvaForwardImport
+      parentRoute: typeof AuthImport
     }
   }
 }
 
 // Create and export the route tree
 
+interface AuthRouteChildren {
+  AuthCargarCurvaForwardRoute: typeof AuthCargarCurvaForwardRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthCargarCurvaForwardRoute: AuthCargarCurvaForwardRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '': typeof AuthRouteWithChildren
+  '/cotizadora-de-gas': typeof CotizadoraDeGasRoute
   '/gas': typeof GasRoute
-  '/price': typeof PriceRoute
+  '/login': typeof LoginRoute
+  '/cargar-curva-forward': typeof AuthCargarCurvaForwardRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '': typeof AuthRouteWithChildren
+  '/cotizadora-de-gas': typeof CotizadoraDeGasRoute
   '/gas': typeof GasRoute
-  '/price': typeof PriceRoute
+  '/login': typeof LoginRoute
+  '/cargar-curva-forward': typeof AuthCargarCurvaForwardRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/_auth': typeof AuthRouteWithChildren
+  '/cotizadora-de-gas': typeof CotizadoraDeGasRoute
   '/gas': typeof GasRoute
-  '/price': typeof PriceRoute
+  '/login': typeof LoginRoute
+  '/_auth/cargar-curva-forward': typeof AuthCargarCurvaForwardRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/gas' | '/price'
+  fullPaths:
+    | '/'
+    | ''
+    | '/cotizadora-de-gas'
+    | '/gas'
+    | '/login'
+    | '/cargar-curva-forward'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/gas' | '/price'
-  id: '__root__' | '/' | '/gas' | '/price'
+  to:
+    | '/'
+    | ''
+    | '/cotizadora-de-gas'
+    | '/gas'
+    | '/login'
+    | '/cargar-curva-forward'
+  id:
+    | '__root__'
+    | '/'
+    | '/_auth'
+    | '/cotizadora-de-gas'
+    | '/gas'
+    | '/login'
+    | '/_auth/cargar-curva-forward'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRouteWithChildren
+  CotizadoraDeGasRoute: typeof CotizadoraDeGasRoute
   GasRoute: typeof GasRoute
-  PriceRoute: typeof PriceRoute
+  LoginRoute: typeof LoginRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRouteWithChildren,
+  CotizadoraDeGasRoute: CotizadoraDeGasRoute,
   GasRoute: GasRoute,
-  PriceRoute: PriceRoute,
+  LoginRoute: LoginRoute,
 }
 
 export const routeTree = rootRoute
@@ -116,18 +199,33 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/_auth",
+        "/cotizadora-de-gas",
         "/gas",
-        "/price"
+        "/login"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
+    "/_auth": {
+      "filePath": "_auth.tsx",
+      "children": [
+        "/_auth/cargar-curva-forward"
+      ]
+    },
+    "/cotizadora-de-gas": {
+      "filePath": "cotizadora-de-gas.tsx"
+    },
     "/gas": {
       "filePath": "gas.tsx"
     },
-    "/price": {
-      "filePath": "price.tsx"
+    "/login": {
+      "filePath": "login.tsx"
+    },
+    "/_auth/cargar-curva-forward": {
+      "filePath": "_auth/cargar-curva-forward.tsx",
+      "parent": "/_auth"
     }
   }
 }

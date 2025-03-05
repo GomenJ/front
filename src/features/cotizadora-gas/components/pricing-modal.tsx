@@ -1,5 +1,7 @@
 import { BlobProvider, PDFViewer } from "@react-pdf/renderer";
-import { GasInvoice } from "./GasInvoice";
+import { GasInvoice } from "./gas-invoice";
+import { es } from "date-fns/locale";
+import { format } from "date-fns";
 
 type PricingModalProps = {
 	formValues: FormValues;
@@ -11,35 +13,38 @@ type Invoice = {
 	selected_indice: string;
 	total_precio: string;
 };
+
 type FormValues = {
 	clientName: string;
 	period: string;
 	startDate: string;
 	volume: string;
 };
-export const PricingModal = ({ formValues, invoice }: PricingModalProps) => {
-	console.log("formValues", formValues);
-	console.log("invoice", invoice);
 
+export const PricingModal = ({ formValues, invoice }: PricingModalProps) => {
 	const endIndex = Number(formValues.period) + 1;
 	const array = invoice.slice(0, endIndex);
+	const endDate = format(
+		new Date(array[array.length - 1].flow_date),
+		"MMMM yyyy",
+		{ locale: es },
+	);
 	const month = Number(formValues.period) + 1;
 	const total = array.reduce(
 		(acc, array) => acc + Number(array.total_precio),
 		0,
 	);
 	const volume = Number(formValues.volume.replace(/,/g, ""));
-	console.log(total);
 	const average = total / array.length;
 	const totalVolume = volume * month;
-	// console.log(average);
-	// const averagePrice = average.toFixed(2);
-	// console.log(averagePrice);
-	const guaranty = totalVolume * Number(average) * 0.22;
-	// 3.19
-	// 175,175
+	const guaranty = totalVolume * Number(average.toFixed(4)) * 0.22;
+	const holgura = volume * Number(average.toFixed(2)) * month * 0.22;
+	const tradeDate = new Date(invoice[0].trade_date);
+	const fixTradeDate = new Date(tradeDate.setDate(tradeDate.getDate() + 1));
+	const startDate = format(new Date(formValues.startDate), "MMMM yyyy", {
+		locale: es,
+	});
 
-	console.log(array);
 	return (
 		<>
 			<div className="w-[1000px] h-[600px]">
@@ -51,17 +56,21 @@ export const PricingModal = ({ formValues, invoice }: PricingModalProps) => {
 				<p className="mb-5">
 					Valor de la garantía: $ {guaranty.toLocaleString()}{" "}
 				</p>
+				<p>Precio Precio real: $ {guaranty} USD/MMTBtu</p>
+				<p>Precio holgura: ${holgura}</p>
 
 				<BlobProvider
 					document={
 						<GasInvoice
 							period={String(month)}
 							volume={volume}
+							endDate={endDate}
 							clientName={formValues.clientName}
 							index={invoice[0].selected_indice}
-							startDate={formValues.startDate}
-							endDate={formValues.startDate}
-							price={guaranty.toFixed(2)}
+							startDate={startDate}
+							price={guaranty.toFixed(3)}
+							averagePrice={average.toFixed(3)}
+							tradeDate={new Date(fixTradeDate)}
 						/>
 					}
 				>
@@ -81,11 +90,13 @@ export const PricingModal = ({ formValues, invoice }: PricingModalProps) => {
 					<GasInvoice
 						period={String(month)}
 						volume={volume}
+						endDate={endDate}
 						clientName={formValues.clientName}
 						index={invoice[0].selected_indice}
-						startDate={formValues.startDate}
-						endDate={formValues.startDate}
-						price={guaranty.toFixed(2)}
+						startDate={startDate}
+						price={guaranty.toFixed(3)}
+						averagePrice={average.toFixed(3)}
+						tradeDate={fixTradeDate}
 					/>
 				</PDFViewer>
 			</div>

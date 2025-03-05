@@ -1,27 +1,40 @@
+import { useAuthStore } from "@/stores/auth-store";
 import { Link } from "@tanstack/react-router";
+import { Calculator, Home, ChartSpline } from "lucide-react";
+// import {use} from "../store/authStore";
 
 // import { Home, CalendarDays, Warehouse, Settings, Users } from "lucide-react";
 
 export const MainNav = () => {
-  return (
-    <nav>
-      <ul className="flex flex-col gap-2 overflow-scroll h-40 hide-scrollbar">
-        <li>
-          <Link to="/" className="[&.active]:font-bold text-red-500">
-            Home
-          </Link>
-        </li>
+	const user = useAuthStore((state) => state.user);
+	return (
+		<nav>
+			<ul className="hide-scrollbar flex flex-col gap-3 overflow-scroll">
+				<li>
+					<Link to="/" className="link">
+						<Home />
+						<span>Home</span>
+					</Link>
+				</li>
 
-        <li>
-          <Link to="/gas" className="[&.active]:font-bold">
-            Gas
-          </Link>
-        </li>
-      </ul>
-    </nav>
-  );
+				{user?.role === "admin" ? (
+					<li>
+						<Link to="/cargar-curva-forward" className="link">
+							<ChartSpline />
+							<span>Cargar curva forward</span>
+						</Link>
+					</li>
+				) : null}
+				<li>
+					<Link to="/cotizadora-de-gas" className="link">
+						<Calculator />
+						<span>Cotizadora de gas</span>
+					</Link>
+				</li>
+			</ul>
+		</nav>
+	);
 };
-
 
 // <li>
 //   <Link to="/dashboard" className="link">

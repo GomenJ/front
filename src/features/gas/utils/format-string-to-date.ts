@@ -12,6 +12,6 @@ export const formatStringtoDate = (dateString: string): string => {
 	year = dateString.slice(3);
 
 	if (month.length === 0 || year.length === 0) return "";
-	const date = new Date(`1 ${month} ${year}`);
+	const date = new Date(`2 ${month} ${year}`);
 	return format(date, "yyyy-MM-dd");
 };

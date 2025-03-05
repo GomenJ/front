@@ -17,9 +17,9 @@ type GasInvoiceProps = {
 	clientName: string;
 	startDate: Date | string;
 	endDate: Date | string;
-	tradeDate: Date;
+	tradeDate: string;
 	index: string;
-	price: string;
+	guarantyPrice: string;
 	averagePrice: string;
 };
 
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
 });
 
 // Create Document Component
-export const GasInvoice = ({
+export const CotizadoraGasInvoice = ({
 	period,
 	volume,
 	clientName,
@@ -109,7 +109,7 @@ export const GasInvoice = ({
 	endDate,
 	averagePrice,
 	index,
-	price,
+	guarantyPrice,
 	tradeDate,
 }: GasInvoiceProps) => {
 	return (
@@ -117,7 +117,6 @@ export const GasInvoice = ({
 			<Page size="A3" style={styles.page}>
 				<View style={styles.section}>
 					<Image
-						// src={"./LUXEM_ENERGIA_COLOR.png"}
 						src={"./luxem_energia_color.png"}
 						style={{
 							height: 25,
@@ -204,9 +203,7 @@ export const GasInvoice = ({
 								style={styles.table_header_row}
 							>{`${startDate} a ${endDate}`}</Text>
 							<Text style={styles.table_header_row}>${averagePrice}</Text>
-							<Text style={styles.table_header_row}>
-								{format(tradeDate, "dd 'de' MMMM 'de' yyyy", { locale: es })}
-							</Text>
+							<Text style={styles.table_header_row}>{tradeDate}</Text>
 						</View>
 					</View>
 
@@ -249,7 +246,7 @@ export const GasInvoice = ({
 						<Text style={{ fontWeight: "bold" }}>
 							e. Monto de garantía por un periodo de {period} meses:{" "}
 						</Text>
-						${Number(price).toLocaleString()} dólares americanos. La
+						${Number(guarantyPrice).toLocaleString()} dólares americanos. La
 						determinación del monto de la garantía está sujeto a las variaciones
 						del mercado y al momento de cierre de la transacción. La garantía se
 						deberá constituir en efectivo de conformidad con los términos
