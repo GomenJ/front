@@ -1,18 +1,4 @@
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-
-import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@/components/ui/form";
-
 import { Input } from "@/components/ui/input";
-import { cotizadoraInvoiceFormSchema } from "../schemas/cotizadora-invoice-form-schema";
 import { useCotizadoraStore } from "../stores/cotizadora-store";
 import { Button } from "@/components/ui/button";
 import { PDFDownloadLink } from "@react-pdf/renderer";
@@ -62,265 +48,150 @@ export const CotizadoraInvoiceForm = ({
 
 	const guaranty = totalVolume * Number(averagePrice) * 0.22;
 
-	// const guarantyTotal =
-	// 	guaranty.toLocaleString() !== undefined ? guaranty.toLocaleString() : 0;
 	const pdfName = `${cotizadoraValues.clientName.replaceAll(" ", "_")}_${format(cotizadoraValues.tradeDate, "yyyy-MM-dd")}.pdf`;
-
-	// 1. Define your form.
-	const form = useForm<z.infer<typeof cotizadoraInvoiceFormSchema>>({
-		resolver: zodResolver(cotizadoraInvoiceFormSchema),
-		defaultValues: {},
-	});
-
-	function onSubmit(values: z.infer<typeof cotizadoraInvoiceFormSchema>) {
-		// ✅ This will be type-safe and validated.
-		console.log(values);
-	}
 
 	return (
 		<>
-			<Form {...form}>
-				<form
-					onSubmit={form.handleSubmit(onSubmit)}
-					className="mx-auto grid w-1/3 space-y-4 md:min-w-40"
-				>
-					<FormField
-						control={form.control}
-						name="index"
-						render={() => (
-							<FormItem>
-								<FormLabel className="font-semibold">Indice</FormLabel>
-								<FormControl>
-									<Input
-										type="text"
-										placeholder="50,000 MMBTu/mes"
-										readOnly
-										defaultValue={cotizadoraValues.index}
-										className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
+			<form className="mx-auto grid w-1/3 space-y-4 md:min-w-40">
+				<div>
+					<Label className="font-semibold">Indice</Label>
+					<Input
+						type="text"
+						placeholder="50,000 MMBTu/mes"
+						readOnly
+						defaultValue={cotizadoraValues.index}
+						className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
 					/>
+				</div>
 
-					<FormField
-						control={form.control}
-						name="tradeDate"
-						render={() => (
-							<FormItem>
-								<FormLabel className="font-semibold">Trade date</FormLabel>
-								<FormControl>
-									<Input
-										type="text"
-										readOnly
-										defaultValue={tradeDate}
-										className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
+				<div>
+					<Label className="font-semibold">Trade date</Label>
+					<Input
+						type="text"
+						readOnly
+						defaultValue={tradeDate}
+						className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
 					/>
+				</div>
 
-					<FormField
-						control={form.control}
-						name="volume"
-						render={() => (
-							<FormItem>
-								<FormLabel className="font-semibold">Volumen</FormLabel>
-								<FormControl>
-									<Input
-										type="text"
-										readOnly
-										defaultValue={cotizadoraValues.volume}
-										className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
+				<div>
+					<Label className="font-semibold">Volumen</Label>
+					<Input
+						type="text"
+						readOnly
+						defaultValue={cotizadoraValues.volume}
+						className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
 					/>
+				</div>
 
-					<FormField
-						control={form.control}
-						name="period"
-						render={() => (
-							<FormItem>
-								<FormLabel className="font-semibold">Periodo</FormLabel>
-								<FormControl>
-									<Input
-										type="text"
-										readOnly
-										defaultValue={period}
-										className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
+				<div>
+					<Label className="font-semibold">Periodo</Label>
+					<Input
+						type="text"
+						readOnly
+						defaultValue={period}
+						className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
 					/>
+				</div>
 
-					{user?.role === "admin" ? (
-						<div>
-							<Label>Precio de curva forward</Label>
-							<Input
-								type="text"
-								defaultValue={`$${average}`}
-								readOnly
-								className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-							/>
-						</div>
-					) : null}
-
-					{user?.role === "admin" ? (
-						<div>
-							<Label>Precio de fee</Label>
-							<Input
-								type="text"
-								defaultValue={`$${fee}`}
-								readOnly
-								className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-							/>
-						</div>
-					) : null}
-
-					{user?.role === "admin" && Number(comisionFee) > 0 ? (
-						<div>
-							<Label>Comisión fee</Label>
-							<Input
-								type="text"
-								defaultValue={`$${comisionFee}`}
-								readOnly
-								className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-							/>
-						</div>
-					) : null}
-
-					<FormField
-						control={form.control}
-						name="average"
-						render={() => (
-							<FormItem>
-								<FormLabel className="font-semibold">
-									{user?.role === "admin"
-										? "Precio final"
-										: "Precio fijo a contratar"}
-								</FormLabel>
-								<FormControl>
-									<Input
-										type="text"
-										defaultValue={`$${averagePrice} USD`}
-										readOnly
-										className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-
-					<FormField
-						control={form.control}
-						name="totalVolume"
-						render={() => (
-							<FormItem>
-								<FormLabel className="font-semibold">Volumen total</FormLabel>
-								<FormControl>
-									<Input
-										type="text"
-										readOnly
-										defaultValue={`${totalVolume.toLocaleString()} MMBTu`}
-										className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-
-					<FormField
-						control={form.control}
-						name="guaranty"
-						render={() => (
-							<FormItem>
-								<FormLabel className="font-semibold">
-									Precio de garantía
-								</FormLabel>
-								<FormControl>
-									<Input
-										type="text"
-										readOnly
-										defaultValue={`$${guaranty.toLocaleString()} USD`}
-										className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-
-					{/* <div>CotizadoraInvoiceForm</div> */}
-					{/* <button onClick={handleBackStep}>Button</button> */}
-					<div className="mb-10">
-						<Button onClick={handleBackStep}>Regresar</Button>
-						{/* <button */}
-						{/* 	onClick={handleBackStep} */}
-						{/* 	className="ring-ring/10 dark:ring-ring/20 dark:outline-ring/40 outline-ring/50 bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center gap-2 rounded-md px-1 py-1.5 text-sm font-medium whitespace-nowrap shadow-sm transition-[color,box-shadow] focus-visible:ring-4 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 aria-invalid:focus-visible:ring-0 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4" */}
-						{/* > */}
-						{/* 	Crear nueva oferta */}
-						{/* </button> */}
-
-						<Button>
-							<PDFDownloadLink
-								fileName={`${pdfName}`}
-								document={
-									<CotizadoraGasInvoice
-										startDate={startDate}
-										endDate={endDate}
-										tradeDate={tradeDate}
-										guarantyPrice={String(guaranty)}
-										volume={volume}
-										period={String(period)}
-										index={cotizadoraValues.index}
-										clientName={cotizadoraValues.clientName}
-										averagePrice={String(averagePrice)}
-									/>
-								}
-							>
-								{({ loading }) =>
-									loading ? "Cargando documento" : "Descargar PDF"
-								}
-							</PDFDownloadLink>
-						</Button>
-
-						{/* <button className="ring-ring/10 dark:ring-ring/20 dark:outline-ring/40 outline-ring/50 bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center gap-2 rounded-md px-1 py-1.5 text-sm font-medium whitespace-nowrap shadow-sm transition-[color,box-shadow] focus-visible:ring-4 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 aria-invalid:focus-visible:ring-0 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"> */}
-						{/* 	<PDFDownloadLink */}
-						{/* 		fileName={`${pdfName}`} */}
-						{/* 		document={ */}
-						{/* 			<CotizadoraGasInvoice */}
-						{/* 				startDate={startDate} */}
-						{/* 				endDate={endDate} */}
-						{/* 				tradeDate={tradeDate} */}
-						{/* 				guarantyPrice={String(guaranty)} */}
-						{/* 				volume={volume} */}
-						{/* 				period={String(period)} */}
-						{/* 				index={cotizadoraValues.index} */}
-						{/* 				clientName={cotizadoraValues.clientName} */}
-						{/* 				averagePrice={String(averagePrice)} */}
-						{/* 			/> */}
-						{/* 		} */}
-						{/* 	> */}
-						{/* 		{({ loading }) => */}
-						{/* 			loading ? "Cargando documento" : "Descargar PDF" */}
-						{/* 		} */}
-						{/* 	</PDFDownloadLink> */}
-						{/* </button> */}
-
-						{/* <Button onClick={handleBackStep}></Button> */}
+				{user?.role === "admin" ? (
+					<div>
+						<Label>Precio de curva forward</Label>
+						<Input
+							type="text"
+							defaultValue={`$${average}`}
+							readOnly
+							className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+						/>
 					</div>
-				</form>
-			</Form>
+				) : null}
+
+				{user?.role === "admin" ? (
+					<div>
+						<Label>Precio de fee</Label>
+						<Input
+							type="text"
+							defaultValue={`$${fee}`}
+							readOnly
+							className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+						/>
+					</div>
+				) : null}
+
+				{user?.role === "admin" && Number(comisionFee) > 0 ? (
+					<div>
+						<Label>Comisión fee</Label>
+						<Input
+							type="text"
+							defaultValue={`$${comisionFee}`}
+							readOnly
+							className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+						/>
+					</div>
+				) : null}
+
+				<div>
+					<Label>
+						{user?.role === "admin"
+							? "Precio final"
+							: "Precio fijo a contratar"}
+						{/* Precio de curva forward */}
+					</Label>
+					<Input
+						type="text"
+						defaultValue={`$${averagePrice} USD`}
+						readOnly
+						className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+					/>
+				</div>
+
+				<div>
+					<Label>Volumen total</Label>
+					<Input
+						type="text"
+						readOnly
+						defaultValue={`${totalVolume.toLocaleString()} MMBTu`}
+						className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+					/>
+				</div>
+
+				<div>
+					<Label className="font-semibold">Precio de garantía</Label>
+					<Input
+						type="text"
+						readOnly
+						defaultValue={`$${guaranty.toLocaleString()} USD`}
+						className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+					/>
+				</div>
+
+				<div className="mb-10">
+					<Button onClick={handleBackStep}>Regresar</Button>
+
+					<Button>
+						<PDFDownloadLink
+							fileName={`${pdfName}`}
+							document={
+								<CotizadoraGasInvoice
+									startDate={startDate}
+									endDate={endDate}
+									tradeDate={tradeDate}
+									guarantyPrice={String(guaranty)}
+									volume={volume}
+									period={String(period)}
+									index={cotizadoraValues.index}
+									clientName={cotizadoraValues.clientName}
+									averagePrice={String(averagePrice)}
+								/>
+							}
+						>
+							{({ loading }) =>
+								loading ? "Cargando documento" : "Descargar PDF"
+							}
+						</PDFDownloadLink>
+					</Button>
+				</div>
+			</form>
 			<TabCotizadora
 				startDate={startDate}
 				endDate={endDate}
