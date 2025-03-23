@@ -9,8 +9,10 @@ export const createDataFromExcel = async ({
 	values: Values;
 }) => {
 	const excelData = await getDataFromExcel(file, values);
-	// const data = await fetch("http://127.0.0.1:5000/api/v1/gas", {
-	const data = await fetch("http://192.168.201.7:8080/api/v1/gas", {
+	// Get the base URL from the environment variable
+	const baseUrl = import.meta.env.VITE_API_URL;
+
+	const data = await fetch(`${baseUrl}/api/v1/gas`, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",

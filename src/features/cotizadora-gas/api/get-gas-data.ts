@@ -7,10 +7,10 @@ export const getGasData = async ({
 	indice: string;
 	tradeDate: string | Date;
 }) => {
-	const response = await fetch(
-		// `http://127.0.0.1:5000/api/v1/gas/${indice}/${tradeDate}`,
-		`http://192.168.201.7:8080/api/v1/gas/${indice}/${tradeDate}`,
-	);
+	// Get the base URL from the environment variable
+	const baseUrl = import.meta.env.VITE_API_URL;
+
+	const response = await fetch(`${baseUrl}/api/v1/gas/${indice}/${tradeDate}`);
 
 	if (!response.ok) {
 		console.error("Error fetching gas data:", response.statusText);

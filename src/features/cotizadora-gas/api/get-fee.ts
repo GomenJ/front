@@ -5,9 +5,11 @@ export const getFee = async ({
 	volume: number;
 	months: number;
 }) => {
+	// Get the base URL from the environment variable
+	const baseUrl = import.meta.env.VITE_API_URL;
+
 	const response = await fetch(
-		// `http://127.0.0.1:5000/api/v1/gas/fee/${months}?volumen_total=${volume}`,
-		`http://192.168.201.7:8080/api/v1/gas/fee/${months}?volumen_total=${volume}`,
+		`${baseUrl}/api/v1/gas/fee/${months}?volumen_total=${volume}`,
 	);
 	if (!response.ok) {
 		throw new Error("Failed to fetch fee");
