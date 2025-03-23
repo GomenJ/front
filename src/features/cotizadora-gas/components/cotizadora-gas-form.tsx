@@ -270,7 +270,7 @@ export const CotizadoraGasForm = ({
 													{data &&
 														data.map((dattum) => (
 															<CommandItem
-																key={crypto.randomUUID()}
+																key={dattum.id}
 																value={dattum.flow_date as unknown as string}
 																onSelect={() => {
 																	form.setValue("startDate", dattum.flow_date);
@@ -345,11 +345,11 @@ export const CotizadoraGasForm = ({
 												</CommandEmpty>
 												<CommandGroup>
 													{invoiceArray &&
-														invoiceArray.map((_, index) => {
+														invoiceArray.map((invoice, index) => {
 															if (index <= 23) {
 																return (
 																	<CommandItem
-																		key={crypto.randomUUID()}
+																		key={invoice.id}
 																		value={String(index + 1)}
 																		onSelect={() => {
 																			form.setValue("period", String(index));

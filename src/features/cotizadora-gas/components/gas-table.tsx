@@ -22,7 +22,7 @@ export const GasTable = ({ data }: { data: CotizadoraGas[] }) => {
 			</TableHeader>
 			<TableBody>
 				{data.map((rowData) => (
-					<TableRow key={crypto.randomUUID()}>
+					<TableRow key={rowData.id}>
 						<TableCell className="font-medium">
 							{format(rowData.trade_date, "dd/MM/yy")}
 						</TableCell>

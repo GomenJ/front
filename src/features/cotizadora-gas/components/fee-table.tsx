@@ -39,7 +39,7 @@ export const FeeTable = () => {
 				</TableHeader>
 				<TableBody>
 					{data.availableDates.map((rowData) => (
-						<TableRow key={crypto.randomUUID()}>
+						<TableRow key={Number(rowData.fee) + Math.random()}>
 							<TableCell>{rowData.volumen_total}</TableCell>
 							<TableCell>{rowData.months}</TableCell>
 							<TableCell>{rowData.fee}</TableCell>
