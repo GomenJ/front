@@ -32,7 +32,9 @@ export const FeeTable = () => {
 						<TableHead className="">volumen</TableHead>
 						<TableHead>meses</TableHead>
 						<TableHead>fee</TableHead>
-						{Number(percantage) > 0 ? <TableHead>comisión</TableHead> : null}
+						{Number(percantage) > 0 ? (
+							<TableHead>comisión de {percantage}%</TableHead>
+						) : null}
 					</TableRow>
 				</TableHeader>
 				<TableBody>
@@ -43,7 +45,9 @@ export const FeeTable = () => {
 							<TableCell>{rowData.fee}</TableCell>
 							{Number(percantage) > 0 ? (
 								<TableCell>
-									{Number(percantage) * Number(rowData.fee)}
+									{Number(
+										Number(`0.${percantage}`) * Number(rowData.fee),
+									).toFixed(4)}
 								</TableCell>
 							) : null}
 						</TableRow>

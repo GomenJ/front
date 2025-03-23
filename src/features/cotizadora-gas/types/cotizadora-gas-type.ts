@@ -1,9 +1,11 @@
 export type CotizadoraGas = {
+	id: number;
 	trade_date: Date;
 	flow_date: Date;
-	hh_indice: string;
-	hh_precio: string;
-	selected_indice: string;
-	selected_precio: string;
-	total_precio: string;
+	indice: string;
+	precio: string;
+	fuente: string;
+	fecha_creacion: Date;
+	usuario: string;
+	fecha_actualizacion: Date;
 };

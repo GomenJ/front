@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { createDataFromExcel } from "../api/create-data-from-excel";
 import type { UseFormReturn } from "react-hook-form";
-import type { Values } from "../types/priceTypes";
+import type { Values } from "../types/price-types";
 
 type Form = UseFormReturn<
 	{

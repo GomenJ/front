@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Loader } from '@/components/Loader'
-import { createFileRoute } from '@tanstack/react-router'
+import { createLazyFileRoute } from '@tanstack/react-router'
 
 import {
   Select,
@@ -9,10 +9,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { ExcelForm } from '@/features/gas/components/excel-form'
-import { PdfForm } from '@/features/gas/components/pdf-form'
+import { ExcelForm } from '@/features/cargar-curva-forward/components/excel-form'
+import { PdfForm } from '@/features/cargar-curva-forward/components/pdf-form'
 
-export const Route = createFileRoute('/_auth/cargar-curva-forward')({
+export const Route = createLazyFileRoute('/_auth/cargar-curva-forward')({
   pendingComponent: Loader,
   component: RouteComponent,
 })

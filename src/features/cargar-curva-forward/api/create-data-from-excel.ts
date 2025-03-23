@@ -1,5 +1,5 @@
 import { getDataFromExcel } from "../utils/excel-data-extractor";
-import type { Values } from "../types/priceTypes";
+import type { Values } from "../types/price-types";
 
 export const createDataFromExcel = async ({
 	file,
@@ -9,7 +9,8 @@ export const createDataFromExcel = async ({
 	values: Values;
 }) => {
 	const excelData = await getDataFromExcel(file, values);
-	const data = await fetch("http://127.0.0.1:5000/api/v1/gas", {
+	// const data = await fetch("http://127.0.0.1:5000/api/v1/gas", {
+	const data = await fetch("http://192.168.201.7:8080/api/v1/gas", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",

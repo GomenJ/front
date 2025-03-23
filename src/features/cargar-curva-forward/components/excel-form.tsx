@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
-import { excelFormSchema } from "../schemas/excelFormSchema";
+import { excelFormSchema } from "../schemas/excel-form-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -24,7 +24,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { useCreateExcelData } from "../hooks/useCreateExcelData";
+import { useCreateExcelData } from "../hooks/use-create-excel-data";
 
 export const ExcelForm = () => {
 	// 1. Define your form.

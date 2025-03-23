@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import * as XLSX from "xlsx";
-import type { Values } from "../types/priceTypes.ts";
+import type { Values } from "../types/price-types.ts";
 import { formatStringtoDate } from "./format-string-to-date.ts";
 
 type RowInfo = {
@@ -75,22 +75,26 @@ export const getDataFromExcel = async (file: File, values: Values) => {
 		},
 		{
 			name: "El Paso Permian",
-			sheetName: "Basis Price",
+			sheetName: "Fixed Price",
+			// sheetName: "Basis Price",
 			index: "EP",
 		},
 		{
 			name: "Houston Ship Channel",
-			sheetName: "Basis Price",
+			sheetName: "Fixed Price",
+			// sheetName: "Basis Price",
 			index: "HSC",
 		},
 		{
 			name: "SoCal Border Avg.",
-			sheetName: "Basis Price",
+			sheetName: "Fixed Price",
+			// sheetName: "Basis Price",
 			index: "SCL",
 		},
 		{
 			name: "Waha",
-			sheetName: "Basis Price",
+			sheetName: "Fixed Price",
+			// sheetName: "Basis Price",
 			index: "WAH",
 		},
 	];

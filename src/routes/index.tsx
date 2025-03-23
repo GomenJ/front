@@ -1,6 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
+// import { useEffect } from "react";
 
 export const Route = createFileRoute("/")({
+	beforeLoad: () => {
+		throw redirect({ to: "/cotizadora-de-gas" });
+	},
 	component: Index,
 });
 

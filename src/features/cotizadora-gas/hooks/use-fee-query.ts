@@ -11,7 +11,6 @@ export const useFeeQuery = () => {
 		mutationFn: ({ volume, months }: { volume: number; months: number }) =>
 			getFee({ volume, months }),
 		onSuccess: (fee: { fee: number }) => {
-			console.log("fee", fee);
 			queryClient.invalidateQueries({
 				queryKey: ["fee"],
 			});

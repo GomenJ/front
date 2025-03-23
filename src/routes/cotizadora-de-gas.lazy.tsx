@@ -1,8 +1,8 @@
 // import { CotizadoraGasForm } from "@/features/cotizadora-gas/components/cotizadora-gas-form";
 import { CotizadoraStepForm } from "@/features/cotizadora-gas/components/cotizadora-step-form";
-import { createFileRoute } from "@tanstack/react-router";
+import { createLazyFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/cotizadora-de-gas")({
+export const Route = createLazyFileRoute("/cotizadora-de-gas")({
 	component: RouteComponent,
 });
 
@@ -13,7 +13,6 @@ function RouteComponent() {
 				Cotizadora de gas
 			</h1>
 			<CotizadoraStepForm />
-			{/* <CotizadoraGasForm /> */}
 		</>
 	);
 }

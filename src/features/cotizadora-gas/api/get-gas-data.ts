@@ -8,7 +8,8 @@ export const getGasData = async ({
 	tradeDate: string | Date;
 }) => {
 	const response = await fetch(
-		`http://127.0.0.1:5000/api/v1/gas/${indice}/${tradeDate}`,
+		// `http://127.0.0.1:5000/api/v1/gas/${indice}/${tradeDate}`,
+		`http://192.168.201.7:8080/api/v1/gas/${indice}/${tradeDate}`,
 	);
 
 	if (!response.ok) {

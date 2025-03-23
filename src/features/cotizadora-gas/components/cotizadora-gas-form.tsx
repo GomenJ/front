@@ -52,7 +52,7 @@ import { getGasData } from "../api/get-gas-data";
 import { CotizadoraGas } from "../types/cotizadora-gas-type";
 import { useAuthStore } from "@/stores/auth-store";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useFeeQuery } from "../hooks/useFeeQuery";
+import { useFeeQuery } from "../hooks/use-fee-query";
 
 type CotizadoraGasFormProps = {
 	handleNextStep: () => void;
@@ -65,10 +65,10 @@ export const CotizadoraGasForm = ({
 	const formValues = useCotizadoraStore((state) => state);
 	const [comision, setComision] = useState(false);
 	const user = useAuthStore((state) => state.user);
-	// const [fee, setFee] = useState<number | null>(formValues?.fee?.fee);
 	const [invoiceArray, setInvoiceArray] = useState<CotizadoraGas[]>(
 		formValues.data || [],
 	);
+
 	const { mutate, isGettingFee } = useFeeQuery();
 	const [gasData, setGasData] = useState<{
 		indice: string;
@@ -126,9 +126,6 @@ export const CotizadoraGasForm = ({
 				},
 			},
 		);
-		// if (!isGettingFee) {
-		// 	handleNextStep();
-		// }
 	}
 	return (
 		<>
@@ -161,6 +158,7 @@ export const CotizadoraGasForm = ({
 										</SelectTrigger>
 									</FormControl>
 									<SelectContent>
+										<SelectItem value="HH">Henry Hub</SelectItem>
 										<SelectItem value="EP">El Paso Permian</SelectItem>
 										<SelectItem value="HSC">Houston Ship Channel</SelectItem>
 										<SelectItem value="SCL">SoCal Border Avg.</SelectItem>
@@ -187,7 +185,11 @@ export const CotizadoraGasForm = ({
 													"pl-3 text-left font-normal",
 													!field.value && "text-muted-foreground",
 												)}
-												disabled={!selectedField || isLoading} // Disable when fetching
+												disabled={
+													availableDates === undefined ||
+													availableDates.length === 0 ||
+													isLoading
+												} // Disable when fetching
 											>
 												{field.value ? (
 													format(field.value, "dd/MM/yyyy")
@@ -212,7 +214,7 @@ export const CotizadoraGasForm = ({
 											}}
 											className=""
 											disabled={(date) =>
-												disableDays(date, availableDates, user)
+												disableDays(date, availableDates!, user)
 											}
 										/>
 									</PopoverContent>
@@ -344,12 +346,6 @@ export const CotizadoraGasForm = ({
 												<CommandGroup>
 													{invoiceArray &&
 														invoiceArray.map((_, index) => {
-															// if (
-															// 	index === 5 ||
-															// 	index === 11 ||
-															// 	index === 17 ||
-															// 	index === 23
-															// ) {
 															if (index <= 23) {
 																return (
 																	<CommandItem
@@ -428,50 +424,55 @@ export const CotizadoraGasForm = ({
 						)}
 					/>
 
-					<FormField
-						control={form.control}
-						name="comision"
-						render={({ field }) => (
-							<FormItem className="flex items-center gap-4">
-								<FormLabel className="font-semibold">
-									¿Requiere comisión?
-								</FormLabel>
-								<FormControl>
-									<Checkbox
-										checked={field.value}
-										onCheckedChange={(e) => {
-											field.onChange(e);
-											setComision(e as boolean);
-										}}
-										className="peer border-primary ring-offset-background focus-visible:ring-ring data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground h-4 h-5 w-4 w-5 shrink-0 rounded-sm border focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
+					{user?.role === "admin" ? (
+						<>
+							<FormField
+								control={form.control}
+								name="comision"
+								render={({ field }) => (
+									<FormItem className="flex items-center gap-4">
+										<FormLabel className="font-semibold">
+											¿Requiere comisión?
+										</FormLabel>
+										<FormControl>
+											<Checkbox
+												checked={field.value}
+												onCheckedChange={(e) => {
+													field.onChange(e);
+													setComision(e as boolean);
+												}}
+												className="peer border-primary ring-offset-background focus-visible:ring-ring data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground h-4 h-5 w-4 w-5 shrink-0 rounded-sm border focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+											/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
 
-					<FormField
-						control={form.control}
-						name="percantage"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel className="font-semibold">
-									Porcentaje de comisión
-								</FormLabel>
-								<FormControl>
-									<Input
-										type="text"
-										disabled={!comision}
-										placeholder="0"
-										{...field}
-										className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
+							<FormField
+								control={form.control}
+								name="percantage"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className="font-semibold">
+											Porcentaje de comisión
+										</FormLabel>
+										<FormControl>
+											<Input
+												type="text"
+												disabled={!comision}
+												placeholder="0"
+												{...field}
+												className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+												autoComplete="off"
+											/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</>
+					) : null}
 
 					<Button
 						type="submit"

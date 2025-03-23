@@ -16,10 +16,12 @@ interface AuthState {
 }
 
 const fakeUsers: User[] = [
-	{ username: "becario", password: "30i65BsMdJtRg^e22&", role: "admin" },
-	{ username: "Edgar", password: "8Uqr5nosPXXg8Im5K#", role: "admin" },
+	{ username: "edgar", password: "8Uqr5nosPXXg8Im5K#", role: "admin" },
 	{ username: "david", password: "3yQbz@Cy01nVgxQKaK", role: "admin" },
-	{ username: "Monse", password: "m@XVCLDQcEv6Nyq4!2", role: "user" },
+	{ username: "becario", password: "30i65BsMdJtRg^e22&", role: "admin" },
+	{ username: "lupita", password: "lc^0$Zsyx0EBZi@48L", role: "user" },
+	{ username: "monse", password: "m@XVCLDQcEv6Nyq4!2", role: "user" },
+	// {kl}
 ];
 
 export const useAuthStore = create<AuthState>()(

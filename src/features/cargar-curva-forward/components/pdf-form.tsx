@@ -23,11 +23,11 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 
-import { pdfFormSchema } from "../schemas/pdfFormSchema";
+import { pdfFormSchema } from "../schemas/pdf-form-schema";
 import { pdfParser } from "../utils/pdf-data-extractor";
 import { formatStringtoDate } from "../utils/format-string-to-date";
 import { Data } from "../utils/excel-data-extractor";
-import { useCreatePDFData } from "../hooks/useCreatePDFData";
+import { useCreatePDFData } from "../hooks/use-create-pdf-data";
 
 export const PdfForm = () => {
 	// 1. Define your form.

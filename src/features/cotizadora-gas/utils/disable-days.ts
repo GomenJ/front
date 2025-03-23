@@ -6,7 +6,7 @@ export const disableDays = (
 	availableDates: string[],
 	user: Omit<User, "password"> | null,
 ) => {
-	const todayDate = format(new Date(), "yyyy-MM-dd");
+	// const todayDate = format(new Date(), "yyyy-MM-dd");
 	const date = format(day.toLocaleDateString(), "yyyy-MM-dd");
 
 	if (user?.role === "admin") {
@@ -16,9 +16,12 @@ export const disableDays = (
 	if (availableDates.length === 0 && !availableDates) return false;
 	// return !availableDates.includes(todayDate) && date === todayDate;
 
-	if (availableDates.includes(date) && date === todayDate) {
+	if (availableDates[0] === date) {
 		return false;
 	}
+	// if (availableDates.includes(date) && date === todayDate) {
+	// 	return false;
+	// }
 
 	return true;
 };

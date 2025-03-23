@@ -38,7 +38,6 @@ export const CotizadoraInvoiceForm = ({
 		"dd 'de' MMMM 'de' yyyy",
 		{ locale: es },
 	);
-	console.log("cotizadoraValues", cotizadoraValues);
 	const startDate = format(cotizadoraValues.startDate, "MMMM yyyy", {
 		locale: es,
 	});
@@ -50,7 +49,7 @@ export const CotizadoraInvoiceForm = ({
 	);
 	const volume = Number(cotizadoraValues.volume.replace(/,/g, ""));
 	const total = array
-		.reduce((acc, array) => acc + Number(array.total_precio), 0)
+		.reduce((acc, array) => acc + Number(array.precio), 0)
 		.toFixed(4);
 
 	const average = Number(Number(total) / array.length).toFixed(4);
@@ -265,26 +264,58 @@ export const CotizadoraInvoiceForm = ({
 					{/* <button onClick={handleBackStep}>Button</button> */}
 					<div className="mb-10">
 						<Button onClick={handleBackStep}>Regresar</Button>
-						<PDFDownloadLink
-							fileName={`${pdfName}`}
-							document={
-								<CotizadoraGasInvoice
-									startDate={startDate}
-									endDate={endDate}
-									tradeDate={tradeDate}
-									guarantyPrice={String(guaranty)}
-									volume={volume}
-									period={String(period)}
-									index={cotizadoraValues.index}
-									clientName={cotizadoraValues.clientName}
-									averagePrice={String(averagePrice)}
-								/>
-							}
-						>
-							{({ loading }) =>
-								loading ? "Cargando documento" : "Descargar PDF"
-							}
-						</PDFDownloadLink>
+						{/* <button */}
+						{/* 	onClick={handleBackStep} */}
+						{/* 	className="ring-ring/10 dark:ring-ring/20 dark:outline-ring/40 outline-ring/50 bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center gap-2 rounded-md px-1 py-1.5 text-sm font-medium whitespace-nowrap shadow-sm transition-[color,box-shadow] focus-visible:ring-4 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 aria-invalid:focus-visible:ring-0 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4" */}
+						{/* > */}
+						{/* 	Crear nueva oferta */}
+						{/* </button> */}
+
+						<Button>
+							<PDFDownloadLink
+								fileName={`${pdfName}`}
+								document={
+									<CotizadoraGasInvoice
+										startDate={startDate}
+										endDate={endDate}
+										tradeDate={tradeDate}
+										guarantyPrice={String(guaranty)}
+										volume={volume}
+										period={String(period)}
+										index={cotizadoraValues.index}
+										clientName={cotizadoraValues.clientName}
+										averagePrice={String(averagePrice)}
+									/>
+								}
+							>
+								{({ loading }) =>
+									loading ? "Cargando documento" : "Descargar PDF"
+								}
+							</PDFDownloadLink>
+						</Button>
+
+						{/* <button className="ring-ring/10 dark:ring-ring/20 dark:outline-ring/40 outline-ring/50 bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center gap-2 rounded-md px-1 py-1.5 text-sm font-medium whitespace-nowrap shadow-sm transition-[color,box-shadow] focus-visible:ring-4 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 aria-invalid:focus-visible:ring-0 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"> */}
+						{/* 	<PDFDownloadLink */}
+						{/* 		fileName={`${pdfName}`} */}
+						{/* 		document={ */}
+						{/* 			<CotizadoraGasInvoice */}
+						{/* 				startDate={startDate} */}
+						{/* 				endDate={endDate} */}
+						{/* 				tradeDate={tradeDate} */}
+						{/* 				guarantyPrice={String(guaranty)} */}
+						{/* 				volume={volume} */}
+						{/* 				period={String(period)} */}
+						{/* 				index={cotizadoraValues.index} */}
+						{/* 				clientName={cotizadoraValues.clientName} */}
+						{/* 				averagePrice={String(averagePrice)} */}
+						{/* 			/> */}
+						{/* 		} */}
+						{/* 	> */}
+						{/* 		{({ loading }) => */}
+						{/* 			loading ? "Cargando documento" : "Descargar PDF" */}
+						{/* 		} */}
+						{/* 	</PDFDownloadLink> */}
+						{/* </button> */}
 
 						{/* <Button onClick={handleBackStep}></Button> */}
 					</div>

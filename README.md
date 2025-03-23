@@ -50,12 +50,14 @@ Currently, two official plugins are available:
 - [x] Precio promedio sería precio fijo a contratar
 - [x] En precio de garantía (USD)
 - [ ] Fondo blanco
-- [ ] Botón de descargar pdf customizar
-- [ ] Comisión
+- [x] Botón de descargar pdf customizar
+- [ ] Comisión, quitarla
+- [x] availableDates is undefined
+- [ ] Agregar toast si no hay fechas
 
 ---
 
-## Despues
+## Despúes
 
 - [ ] Modificar chart y fonts
 - [ ] Agregar formato para powerpoint

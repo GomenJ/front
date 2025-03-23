@@ -16,7 +16,7 @@ export const LineChartCotizadora = () => {
 	// Transform the data
 	const newData = data.map((item) => ({
 		flow_date: format(new Date(item.flow_date), "yyyy-MM-dd"), // Format date
-		total_precio: Number(item.total_precio), // Convert to number
+		total_precio: Number(item.precio), // Convert to number
 	}));
 
 	return (

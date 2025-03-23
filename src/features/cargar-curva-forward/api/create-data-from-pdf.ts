@@ -1,7 +1,8 @@
 import type { Data } from "../utils/excel-data-extractor";
 
 export const createDataFromPdf = async (pdfData: Data[]) => {
-	const data = await fetch("http://127.0.0.1:5000/api/v1/gas", {
+	// const data = await fetch("http://127.0.0.1:5000/api/v1/gas", {
+	const data = await fetch("http://192.168.201.7:8080/api/v1/gas", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
