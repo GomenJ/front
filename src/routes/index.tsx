@@ -8,7 +8,7 @@ export const Route = createFileRoute("/")({
 function Index() {
 	return (
 		<div className="grid h-full w-full place-content-center p-2 text-center">
-			<h3 className="text-5xl font-semibold">Pantalla de inició</h3>
+			<h3 className="text-5xl font-semibold">Pantalla de inicio</h3>
 		</div>
 	);
 }
