@@ -20,9 +20,17 @@ const fakeUsers: User[] = [
 	{ username: "david", password: "3yQbz@Cy01nVgxQKaK", role: "admin" },
 	{ username: "becario", password: "30i65BsMdJtRg^e22&", role: "admin" },
 	{ username: "lupita", password: "lc^0$Zsyx0EBZi@48L", role: "user" },
-	{ username: "monse", password: "m@XVCLDQcEv6Nyq4!2", role: "user" },
-	// {kl}
+	{ username: "monse", password: "RarLcz0qvV@APF$%88", role: "user" },
+	{ username: "jose", password: "PPqmTI2Hpn%&m^W9l%", role: "user" },
+	{ username: "miguel", password: "UG3F8$NXejn*fZTxRD", role: "user" },
+	{ username: "alonso", password: "Strs!e3umK@0C&xpLq", role: "user" },
+	{ username: "martin", password: "hgSNa$nih6Xp&3bd#W", role: "user" },
 ];
+
+// import de garantía
+// Desde cuando empieza el contrato
+// Volumen total de contrato
+// Volumen mensual
 
 export const useAuthStore = create<AuthState>()(
 	persist(
