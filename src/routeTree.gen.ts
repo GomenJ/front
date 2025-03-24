@@ -19,7 +19,9 @@ import { Route as IndexImport } from './routes/index'
 // Create Virtual Routes
 
 const LoginLazyImport = createFileRoute('/login')()
-const CotizadoraDeGasLazyImport = createFileRoute('/cotizadora-de-gas')()
+const AuthCotizadoraDeGasLazyImport = createFileRoute(
+  '/_auth/cotizadora-de-gas',
+)()
 const AuthCargarCurvaForwardLazyImport = createFileRoute(
   '/_auth/cargar-curva-forward',
 )()
@@ -32,14 +34,6 @@ const LoginLazyRoute = LoginLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/login.lazy').then((d) => d.Route))
 
-const CotizadoraDeGasLazyRoute = CotizadoraDeGasLazyImport.update({
-  id: '/cotizadora-de-gas',
-  path: '/cotizadora-de-gas',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/cotizadora-de-gas.lazy').then((d) => d.Route),
-)
-
 const AuthRoute = AuthImport.update({
   id: '/_auth',
   getParentRoute: () => rootRoute,
@@ -50,6 +44,14 @@ const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any)
+
+const AuthCotizadoraDeGasLazyRoute = AuthCotizadoraDeGasLazyImport.update({
+  id: '/cotizadora-de-gas',
+  path: '/cotizadora-de-gas',
+  getParentRoute: () => AuthRoute,
+} as any).lazy(() =>
+  import('./routes/_auth/cotizadora-de-gas.lazy').then((d) => d.Route),
+)
 
 const AuthCargarCurvaForwardLazyRoute = AuthCargarCurvaForwardLazyImport.update(
   {
@@ -79,13 +81,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
-    '/cotizadora-de-gas': {
-      id: '/cotizadora-de-gas'
-      path: '/cotizadora-de-gas'
-      fullPath: '/cotizadora-de-gas'
-      preLoaderRoute: typeof CotizadoraDeGasLazyImport
-      parentRoute: typeof rootRoute
-    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -100,6 +95,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthCargarCurvaForwardLazyImport
       parentRoute: typeof AuthImport
     }
+    '/_auth/cotizadora-de-gas': {
+      id: '/_auth/cotizadora-de-gas'
+      path: '/cotizadora-de-gas'
+      fullPath: '/cotizadora-de-gas'
+      preLoaderRoute: typeof AuthCotizadoraDeGasLazyImport
+      parentRoute: typeof AuthImport
+    }
   }
 }
 
@@ -107,10 +109,12 @@ declare module '@tanstack/react-router' {
 
 interface AuthRouteChildren {
   AuthCargarCurvaForwardLazyRoute: typeof AuthCargarCurvaForwardLazyRoute
+  AuthCotizadoraDeGasLazyRoute: typeof AuthCotizadoraDeGasLazyRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthCargarCurvaForwardLazyRoute: AuthCargarCurvaForwardLazyRoute,
+  AuthCotizadoraDeGasLazyRoute: AuthCotizadoraDeGasLazyRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
@@ -118,26 +122,26 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '': typeof AuthRouteWithChildren
-  '/cotizadora-de-gas': typeof CotizadoraDeGasLazyRoute
   '/login': typeof LoginLazyRoute
   '/cargar-curva-forward': typeof AuthCargarCurvaForwardLazyRoute
+  '/cotizadora-de-gas': typeof AuthCotizadoraDeGasLazyRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '': typeof AuthRouteWithChildren
-  '/cotizadora-de-gas': typeof CotizadoraDeGasLazyRoute
   '/login': typeof LoginLazyRoute
   '/cargar-curva-forward': typeof AuthCargarCurvaForwardLazyRoute
+  '/cotizadora-de-gas': typeof AuthCotizadoraDeGasLazyRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteWithChildren
-  '/cotizadora-de-gas': typeof CotizadoraDeGasLazyRoute
   '/login': typeof LoginLazyRoute
   '/_auth/cargar-curva-forward': typeof AuthCargarCurvaForwardLazyRoute
+  '/_auth/cotizadora-de-gas': typeof AuthCotizadoraDeGasLazyRoute
 }
 
 export interface FileRouteTypes {
@@ -145,32 +149,30 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | ''
-    | '/cotizadora-de-gas'
     | '/login'
     | '/cargar-curva-forward'
+    | '/cotizadora-de-gas'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '' | '/cotizadora-de-gas' | '/login' | '/cargar-curva-forward'
+  to: '/' | '' | '/login' | '/cargar-curva-forward' | '/cotizadora-de-gas'
   id:
     | '__root__'
     | '/'
     | '/_auth'
-    | '/cotizadora-de-gas'
     | '/login'
     | '/_auth/cargar-curva-forward'
+    | '/_auth/cotizadora-de-gas'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRouteWithChildren
-  CotizadoraDeGasLazyRoute: typeof CotizadoraDeGasLazyRoute
   LoginLazyRoute: typeof LoginLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRouteWithChildren,
-  CotizadoraDeGasLazyRoute: CotizadoraDeGasLazyRoute,
   LoginLazyRoute: LoginLazyRoute,
 }
 
@@ -186,7 +188,6 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/_auth",
-        "/cotizadora-de-gas",
         "/login"
       ]
     },
@@ -196,17 +197,19 @@ export const routeTree = rootRoute
     "/_auth": {
       "filePath": "_auth.tsx",
       "children": [
-        "/_auth/cargar-curva-forward"
+        "/_auth/cargar-curva-forward",
+        "/_auth/cotizadora-de-gas"
       ]
-    },
-    "/cotizadora-de-gas": {
-      "filePath": "cotizadora-de-gas.lazy.tsx"
     },
     "/login": {
       "filePath": "login.lazy.tsx"
     },
     "/_auth/cargar-curva-forward": {
       "filePath": "_auth/cargar-curva-forward.lazy.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/cotizadora-de-gas": {
+      "filePath": "_auth/cotizadora-de-gas.lazy.tsx",
       "parent": "/_auth"
     }
   }

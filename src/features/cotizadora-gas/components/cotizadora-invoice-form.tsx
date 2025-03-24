@@ -17,6 +17,7 @@ export const CotizadoraInvoiceForm = ({
 	handleBackStep,
 }: CotizadoraInvoiceFormProps) => {
 	const cotizadoraValues = useCotizadoraStore((state) => state);
+	const reset = useCotizadoraStore((state) => state.reset);
 	const user = useAuthStore((state) => state.user);
 	const period = Number(cotizadoraValues.period) + 1;
 	const tradeDate = format(
@@ -165,9 +166,7 @@ export const CotizadoraInvoiceForm = ({
 					/>
 				</div>
 
-				<div className="mb-10">
-					<Button onClick={handleBackStep}>Regresar</Button>
-
+				<div className="mb-10 flex justify-between">
 					<Button>
 						<PDFDownloadLink
 							fileName={`${pdfName}`}
@@ -189,6 +188,15 @@ export const CotizadoraInvoiceForm = ({
 								loading ? "Cargando documento" : "Descargar PDF"
 							}
 						</PDFDownloadLink>
+					</Button>
+
+					<Button
+						onClick={() => {
+							reset();
+							handleBackStep();
+						}}
+					>
+						Crear nueva oferta
 					</Button>
 				</div>
 			</form>

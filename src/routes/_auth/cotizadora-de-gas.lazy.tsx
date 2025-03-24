@@ -2,7 +2,7 @@
 import { CotizadoraStepForm } from "@/features/cotizadora-gas/components/cotizadora-step-form";
 import { createLazyFileRoute } from "@tanstack/react-router";
 
-export const Route = createLazyFileRoute("/cotizadora-de-gas")({
+export const Route = createLazyFileRoute("/_auth/cotizadora-de-gas")({
 	component: RouteComponent,
 });
 
