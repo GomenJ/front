@@ -2,11 +2,12 @@ import { create } from "zustand";
 import { z } from "zod";
 import { cotizadoraGasFormSchema } from "../schemas/cotizadora-gas-form-schema";
 import type { CotizadoraGas } from "../types/cotizadora-gas-type";
+import type { FeeType } from "../types/fees-type";
 
 type CotizadoraState = z.infer<typeof cotizadoraGasFormSchema> & {
 	data: CotizadoraGas[];
-	fee: { fee: number } | null;
-	setFee: (fee: number) => void;
+	fee: { fee: FeeType } | null;
+	setFee: (fee: { fee: FeeType }) => void;
 };
 
 type CotizadoraAction = {
@@ -27,7 +28,7 @@ export const useCotizadoraStore = create<CotizadoraState & CotizadoraAction>()(
 		data: [],
 
 		setCotizadoraValues: (values) => set(() => ({ ...values })),
-		setFee: (fee) => set({ fee: { fee } }),
+		setFee: (fee) => set(() => ({ fee })),
 		reset: () =>
 			set(() => ({
 				index: "",

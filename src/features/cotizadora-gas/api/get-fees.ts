@@ -1,4 +1,8 @@
-import { FeeType } from "../types/fees-type";
+import type { FeeType } from "../types/fees-type";
+
+type Fees = {
+	fees: FeeType[];
+};
 
 export const getFees = async () => {
 	// Get the base URL from the environment variable
@@ -9,5 +13,5 @@ export const getFees = async () => {
 		throw new Error("Failed to fetch fees");
 	}
 	const data = await response.json();
-	return data as FeeType;
+	return data as Fees;
 };

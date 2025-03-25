@@ -9,6 +9,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { getFees } from "../api/get-fees";
 import { useCotizadoraStore } from "../stores/cotizadora-store";
+import { Loader } from "@/components/Loader";
 
 export const FeeTable = () => {
 	const percantage = useCotizadoraStore((state) => state.percantage);
@@ -21,7 +22,7 @@ export const FeeTable = () => {
 	});
 
 	if (!data) {
-		return <div>Loading...</div>;
+		return <Loader />;
 	}
 
 	return (
@@ -35,13 +36,14 @@ export const FeeTable = () => {
 						{Number(percantage) > 0 ? (
 							<TableHead>comisión de {percantage}%</TableHead>
 						) : null}
+						<TableHead>Version</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
-					{data.availableDates.map((rowData) => (
+					{data.fees.map((rowData) => (
 						<TableRow key={Number(rowData.fee) + Math.random()}>
-							<TableCell>{rowData.volumen_total}</TableCell>
-							<TableCell>{rowData.months}</TableCell>
+							<TableCell>{rowData.volumen}</TableCell>
+							<TableCell>{rowData.meses}</TableCell>
 							<TableCell>{rowData.fee}</TableCell>
 							{Number(percantage) > 0 ? (
 								<TableCell>
@@ -50,6 +52,7 @@ export const FeeTable = () => {
 									).toFixed(4)}
 								</TableCell>
 							) : null}
+							<TableCell>{rowData.fee_version}</TableCell>
 						</TableRow>
 					))}
 				</TableBody>

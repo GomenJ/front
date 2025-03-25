@@ -19,6 +19,7 @@ const fakeUsers: User[] = [
 	{ username: "edgar", password: "8Uqr5nosPXXg8Im5K#", role: "admin" },
 	{ username: "david", password: "3yQbz@Cy01nVgxQKaK", role: "admin" },
 	{ username: "becario", password: "30i65BsMdJtRg^e22&", role: "admin" },
+	{ username: "generico", password: "5QF8goH4LqbPL0#mGg", role: "user" },
 	{ username: "lupita", password: "lc^0$Zsyx0EBZi@48L", role: "user" },
 	{ username: "monse", password: "RarLcz0qvV@APF$%88", role: "user" },
 	{ username: "jose", password: "PPqmTI2Hpn%&m^W9l%", role: "user" },

@@ -116,10 +116,10 @@ export const CotizadoraGasForm = ({
 	function onSubmit(values: z.infer<typeof cotizadoraGasFormSchema>) {
 		// ✅ This will be type-safe and validated.
 		setCotizadoraValues({ ...formValues, ...values, data: invoiceArray });
-		const months = Number(values.period) + 1;
+		const meses = Number(values.period) + 1;
 
 		mutate(
-			{ volume: Number(values.volume.replaceAll(",", "")), months },
+			{ volume: Number(values.volume.replaceAll(",", "")), meses },
 			{
 				onSuccess: () => {
 					handleNextStep();

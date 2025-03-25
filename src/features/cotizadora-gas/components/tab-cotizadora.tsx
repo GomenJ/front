@@ -28,6 +28,8 @@ export const TabCotizadora = ({
 }: TabCotizadoraProps) => {
 	const user = useAuthStore((state) => state.user);
 	const cotizadoraValues = useCotizadoraStore((state) => state);
+	const months = Number(cotizadoraValues.period) + 1;
+	const data = cotizadoraValues.data.slice(0, months);
 
 	return (
 		<Tabs defaultValue="curva" className="mx-auto mb-10 w-[1/2] px-28">
@@ -40,9 +42,7 @@ export const TabCotizadora = ({
 				) : null}
 			</TabsList>
 			<TabsContent value="curva">
-				{cotizadoraValues.data.length > 0 ? (
-					<GasTable data={cotizadoraValues.data} />
-				) : null}
+				{cotizadoraValues.data.length > 0 ? <GasTable data={data} /> : null}
 			</TabsContent>
 			<TabsContent value="preview_pdf">
 				<PDFViewer className="h-[700px] w-full">

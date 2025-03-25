@@ -1,7 +1,7 @@
 export type FeeType = {
-	availableDates: {
-		volumen_total: number;
-		months: number;
-		fee: string;
-	}[];
+	id: number;
+	volumen: number;
+	meses: number;
+	fee: string;
+	fee_version: string;
 };

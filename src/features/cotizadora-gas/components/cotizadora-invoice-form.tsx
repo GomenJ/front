@@ -66,6 +66,19 @@ export const CotizadoraInvoiceForm = ({
 				</div>
 
 				<div>
+					<Label className="font-semibold">Inicio de contrato</Label>
+					<Input
+						type="text"
+						placeholder="50,000 MMBTu/mes"
+						readOnly
+						defaultValue={format(array[0].flow_date, "MMMM 'de' yyyy", {
+							locale: es,
+						})}
+						className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+					/>
+				</div>
+
+				<div>
 					<Label className="font-semibold">Trade date</Label>
 					<Input
 						type="text"
@@ -76,7 +89,7 @@ export const CotizadoraInvoiceForm = ({
 				</div>
 
 				<div>
-					<Label className="font-semibold">Volumen</Label>
+					<Label className="font-semibold">Volumen mensual</Label>
 					<Input
 						type="text"
 						readOnly
@@ -86,7 +99,7 @@ export const CotizadoraInvoiceForm = ({
 				</div>
 
 				<div>
-					<Label className="font-semibold">Periodo</Label>
+					<Label className="font-semibold">Periodo del contrato</Label>
 					<Input
 						type="text"
 						readOnly
@@ -97,7 +110,7 @@ export const CotizadoraInvoiceForm = ({
 
 				{user?.role === "admin" ? (
 					<div>
-						<Label>Precio de curva forward</Label>
+						<Label className="font-semibold">Precio de curva forward</Label>
 						<Input
 							type="text"
 							defaultValue={`$${average}`}
@@ -109,7 +122,7 @@ export const CotizadoraInvoiceForm = ({
 
 				{user?.role === "admin" ? (
 					<div>
-						<Label>Precio de fee</Label>
+						<Label className="font-semibold">Precio de fee</Label>
 						<Input
 							type="text"
 							defaultValue={`$${fee}`}
@@ -121,7 +134,7 @@ export const CotizadoraInvoiceForm = ({
 
 				{user?.role === "admin" && Number(comisionFee) > 0 ? (
 					<div>
-						<Label>Comisión fee</Label>
+						<Label className="font-semibold">Comisión fee</Label>
 						<Input
 							type="text"
 							defaultValue={`$${comisionFee}`}
@@ -132,7 +145,7 @@ export const CotizadoraInvoiceForm = ({
 				) : null}
 
 				<div>
-					<Label>
+					<Label className="font-semibold">
 						{user?.role === "admin"
 							? "Precio final"
 							: "Precio fijo a contratar"}
@@ -147,7 +160,7 @@ export const CotizadoraInvoiceForm = ({
 				</div>
 
 				<div>
-					<Label>Volumen total</Label>
+					<Label className="font-semibold">Volumen total del contrato</Label>
 					<Input
 						type="text"
 						readOnly
