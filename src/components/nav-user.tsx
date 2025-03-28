@@ -1,4 +1,4 @@
-import { ChevronsUpDown, LogOut, LogIn } from "lucide-react";
+import { ChevronsUpDown, LogOut, LogIn, EyeOff } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -14,6 +14,7 @@ import {
 import { Button } from "./ui/button";
 import { useNavigate } from "@tanstack/react-router";
 import { useAuthStore } from "@/stores/auth-store";
+import { HideComission } from "./hide-comission";
 
 export function NavUser({
 	user,
@@ -64,6 +65,11 @@ export function NavUser({
 						</div>
 					</div>
 				</DropdownMenuLabel>
+				<DropdownMenuSeparator />
+				<DropdownMenuItem>
+					<EyeOff />
+					<HideComission />
+				</DropdownMenuItem>
 				<DropdownMenuSeparator />
 				{user.name !== "Generico" ? (
 					<DropdownMenuItem

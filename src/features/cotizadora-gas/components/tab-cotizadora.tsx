@@ -21,7 +21,6 @@ export const TabCotizadora = ({
 	startDate,
 	endDate,
 	period,
-	tradeDate,
 	guaranty,
 	volume,
 	averagePrice,
@@ -49,7 +48,6 @@ export const TabCotizadora = ({
 					<CotizadoraGasInvoice
 						startDate={startDate}
 						endDate={endDate}
-						tradeDate={tradeDate}
 						guarantyPrice={String(guaranty)}
 						volume={volume}
 						period={String(period)}

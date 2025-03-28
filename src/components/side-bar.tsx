@@ -1,5 +1,5 @@
 import { useAuthStore } from "@/stores/auth-store";
-import { MainNav } from "./MainNav";
+import { MainNav } from "./main-nav";
 import { NavUser } from "./nav-user";
 
 export const Sidebar = () => {
@@ -26,24 +26,6 @@ export const Sidebar = () => {
 					}}
 				/>
 			</div>
-
-			{/* <div className="absolute bottom-0 mb-4"> */}
-			{/* 	<DropdownMenu> */}
-			{/* 		<DropdownMenuTrigger> */}
-			{/* 			<Button variant="outline" className="link w-full"> */}
-			{/* 				Open */}
-			{/* 			</Button> */}
-			{/* 		</DropdownMenuTrigger> */}
-			{/* 		<DropdownMenuContent> */}
-			{/* 			<DropdownMenuLabel>My Account</DropdownMenuLabel> */}
-			{/* 			<DropdownMenuSeparator /> */}
-			{/* 			<DropdownMenuItem>Profile</DropdownMenuItem> */}
-			{/* 			<DropdownMenuItem>Billing</DropdownMenuItem> */}
-			{/* 			<DropdownMenuItem>Team</DropdownMenuItem> */}
-			{/* 			<DropdownMenuItem>Subscription</DropdownMenuItem> */}
-			{/* 		</DropdownMenuContent> */}
-			{/* 	</DropdownMenu> */}
-			{/* </div> */}
 		</aside>
 	);
 };

@@ -9,7 +9,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { getFees } from "../api/get-fees";
 import { useCotizadoraStore } from "../stores/cotizadora-store";
-import { Loader } from "@/components/Loader";
+import { Loader } from "@/components/loader";
 
 export const FeeTable = () => {
 	const percantage = useCotizadoraStore((state) => state.percantage);

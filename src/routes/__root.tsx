@@ -1,6 +1,6 @@
 import { createRootRoute, Outlet, Link } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { Sidebar } from "../components/Sidebar";
+import { Sidebar } from "../components/side-bar";
 import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
 

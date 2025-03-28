@@ -53,6 +53,7 @@ import { CotizadoraGas } from "../types/cotizadora-gas-type";
 import { useAuthStore } from "@/stores/auth-store";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useFeeQuery } from "../hooks/use-fee-query";
+import { useCommissionStore } from "@/stores/comission-store";
 
 type CotizadoraGasFormProps = {
 	handleNextStep: () => void;
@@ -61,8 +62,10 @@ type CotizadoraGasFormProps = {
 export const CotizadoraGasForm = ({
 	handleNextStep,
 }: CotizadoraGasFormProps) => {
+	const { hidden, percentage } = useCommissionStore();
 	const [selectedField, setSelectedField] = useState<string | null>(null);
 	const formValues = useCotizadoraStore((state) => state);
+	const [openCalendar, setOpenCalendar] = useState(false);
 	const [comision, setComision] = useState(false);
 	const user = useAuthStore((state) => state.user);
 	const [invoiceArray, setInvoiceArray] = useState<CotizadoraGas[]>(
@@ -90,7 +93,7 @@ export const CotizadoraGasForm = ({
 			volume: formValues.volume,
 			clientName: formValues.clientName,
 			comision: false,
-			percantage: "0",
+			percantage: String(percentage),
 		},
 	});
 
@@ -176,7 +179,7 @@ export const CotizadoraGasForm = ({
 						render={({ field }) => (
 							<FormItem className="">
 								<FormLabel>TradeDate</FormLabel>
-								<Popover>
+								<Popover open={openCalendar}>
 									<PopoverTrigger asChild className="">
 										<FormControl className="">
 											<Button
@@ -189,7 +192,8 @@ export const CotizadoraGasForm = ({
 													availableDates === undefined ||
 													availableDates.length === 0 ||
 													isLoading
-												} // Disable when fetching
+												}
+												onClick={() => setOpenCalendar(!openCalendar)}
 											>
 												{field.value ? (
 													format(field.value, "dd/MM/yyyy")
@@ -211,6 +215,7 @@ export const CotizadoraGasForm = ({
 													indice: form.getValues("index"),
 													tradeDate: format(e as Date, "yyyy-MM-dd"),
 												});
+												setOpenCalendar(false);
 											}}
 											className=""
 											disabled={(date) =>
@@ -242,6 +247,7 @@ export const CotizadoraGasForm = ({
 													"justify-between",
 													!field.value && "text-muted-foreground",
 												)}
+												// disabled={!form.getValues("tradeDate")}
 												disabled={!form.getValues("tradeDate")}
 											>
 												{field.value && data
@@ -389,7 +395,7 @@ export const CotizadoraGasForm = ({
 								<FormControl>
 									<Input
 										type="text"
-										placeholder="50,000 MMBTu/mes"
+										placeholder="15,000 MMBTu/mes"
 										{...field}
 										disabled={!form.getValues("tradeDate")}
 										className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
@@ -424,7 +430,7 @@ export const CotizadoraGasForm = ({
 						)}
 					/>
 
-					{user?.role === "admin" ? (
+					{!hidden ? (
 						<>
 							<FormField
 								control={form.control}

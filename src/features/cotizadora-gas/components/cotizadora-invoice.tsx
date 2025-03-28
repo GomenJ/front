@@ -17,7 +17,6 @@ type GasInvoiceProps = {
 	clientName: string;
 	startDate: Date | string;
 	endDate: Date | string;
-	tradeDate: string;
 	index: string;
 	guarantyPrice: string;
 	averagePrice: string;
@@ -110,7 +109,6 @@ export const CotizadoraGasInvoice = ({
 	averagePrice,
 	index,
 	guarantyPrice,
-	tradeDate,
 }: GasInvoiceProps) => {
 	return (
 		<Document>
@@ -137,7 +135,7 @@ export const CotizadoraGasInvoice = ({
 						<Text style={{ fontWeight: "bold" }}>{clientName}</Text>, por medio
 						del presente{" "}
 						<Text style={{ fontWeight: "bold" }}>Luxem Energía</Text> oferta la
-						siguiente propuest{" "}
+						siguiente propuesta{" "}
 						<Text style={{ textTransform: "uppercase", fontWeight: "bold" }}>
 							no vinculante
 						</Text>{" "}
@@ -155,7 +153,7 @@ export const CotizadoraGasInvoice = ({
 						listItem="a."
 						spacing="15"
 					>
-						Fijo.
+						Precio fijo.
 					</ListItem>
 
 					<ListItem
@@ -173,7 +171,11 @@ export const CotizadoraGasInvoice = ({
 						listItem="c."
 						spacing="15"
 					>
-						{volume.toLocaleString()} MMBTu mensuales.
+						{volume.toLocaleString("es-MX", {
+							style: "currency",
+							currency: "MXN",
+						})}{" "}
+						MMBTu mensuales.
 					</ListItem>
 
 					<ListItem indentation="20" label="Plazo:" listItem="d." spacing="15">
@@ -203,7 +205,11 @@ export const CotizadoraGasInvoice = ({
 								style={styles.table_header_row}
 							>{`${startDate} a ${endDate}`}</Text>
 							<Text style={styles.table_header_row}>${averagePrice}</Text>
-							<Text style={styles.table_header_row}>{tradeDate}</Text>
+							<Text style={styles.table_header_row}>
+								{format(new Date(), "dd 'de' MMMM 'de' yyyy", {
+									locale: es,
+								})}
+							</Text>
 						</View>
 					</View>
 
@@ -246,11 +252,15 @@ export const CotizadoraGasInvoice = ({
 						<Text style={{ fontWeight: "bold" }}>
 							e. Monto de garantía por un periodo de {period} meses:{" "}
 						</Text>
-						${Number(guarantyPrice).toLocaleString()} dólares americanos. La
-						determinación del monto de la garantía está sujeto a las variaciones
-						del mercado y al momento de cierre de la transacción. La garantía se
-						deberá constituir en efectivo de conformidad con los términos
-						estipulados en el contrato.
+						$
+						{Number(guarantyPrice).toLocaleString("es-MX", {
+							style: "currency",
+							currency: "MXN",
+						})}{" "}
+						dólares americanos. La determinación del monto de la garantía está
+						sujeto a las variaciones del mercado y al momento de cierre de la
+						transacción. La garantía se deberá constituir en efectivo de
+						conformidad con los términos estipulados en el contrato.
 					</Text>
 
 					<View style={{ textAlign: "center" }}>

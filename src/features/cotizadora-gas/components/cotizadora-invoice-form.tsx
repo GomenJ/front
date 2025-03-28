@@ -164,7 +164,7 @@ export const CotizadoraInvoiceForm = ({
 					<Input
 						type="text"
 						readOnly
-						defaultValue={`${totalVolume.toLocaleString()} MMBTu`}
+						defaultValue={`${totalVolume.toLocaleString("es-MX", { style: "currency", currency: "MXN" })} MMBTu`}
 						className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
 					/>
 				</div>
@@ -174,7 +174,7 @@ export const CotizadoraInvoiceForm = ({
 					<Input
 						type="text"
 						readOnly
-						defaultValue={`$${guaranty.toLocaleString()} USD`}
+						defaultValue={`$${guaranty.toLocaleString("es-MX", { style: "currency", currency: "MXN" })} USD`}
 						className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
 					/>
 				</div>
@@ -187,7 +187,6 @@ export const CotizadoraInvoiceForm = ({
 								<CotizadoraGasInvoice
 									startDate={startDate}
 									endDate={endDate}
-									tradeDate={tradeDate}
 									guarantyPrice={String(guaranty)}
 									volume={volume}
 									period={String(period)}
