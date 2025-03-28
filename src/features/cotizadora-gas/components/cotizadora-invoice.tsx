@@ -171,11 +171,7 @@ export const CotizadoraGasInvoice = ({
 						listItem="c."
 						spacing="15"
 					>
-						{volume.toLocaleString("es-MX", {
-							style: "currency",
-							currency: "MXN",
-						})}{" "}
-						MMBTu mensuales.
+						{volume.toLocaleString("es-MX")} MMBTu mensuales.
 					</ListItem>
 
 					<ListItem indentation="20" label="Plazo:" listItem="d." spacing="15">
@@ -252,7 +248,6 @@ export const CotizadoraGasInvoice = ({
 						<Text style={{ fontWeight: "bold" }}>
 							e. Monto de garantía por un periodo de {period} meses:{" "}
 						</Text>
-						$
 						{Number(guarantyPrice).toLocaleString("es-MX", {
 							style: "currency",
 							currency: "MXN",
