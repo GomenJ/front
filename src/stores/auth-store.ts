@@ -28,11 +28,6 @@ const fakeUsers: User[] = [
 	{ username: "martin", password: "hgSNa$nih6Xp&3bd#W", role: "user" },
 ];
 
-// import de garantía
-// Desde cuando empieza el contrato
-// Volumen total de contrato
-// Volumen mensual
-
 export const useAuthStore = create<AuthState>()(
 	persist(
 		(set) => ({

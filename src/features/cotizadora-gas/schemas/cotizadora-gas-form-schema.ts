@@ -19,23 +19,21 @@ export const cotizadoraGasFormSchema = z.object({
 		.refine((period) => period.length > 0),
 	volume: z
 		.string()
-		// .refine(
-		// 	(volume) => {
-		// 		const newNumber = Number(volume.replace(/,/g, ""));
-		// 		return newNumber > 0;
-		// 	},
-		// 	{
-		// 		message: "Ingrese un número mayor a 5_000",
-		// 	},
-		// )
 		.refine(
 			(volume) => {
 				const newNumber = Number(volume.replace(/,/g, ""));
-				return newNumber >= 5_000 && newNumber <= 15_000;
+				return Number.isInteger(newNumber);
+			},
+			{ message: "No puede haber volumenes con decimales" },
+		)
+		.refine(
+			(volume) => {
+				const newNumber = Number(volume.replace(/,/g, ""));
+				return newNumber >= 5_000 && newNumber <= 30_000;
 			},
 			{
 				message:
-					"Solo se puede ingresar numeros mayores a 5000 y menores a 15,000",
+					"Solo se puede ingresar numeros mayores a 5000 y menores a 30,000",
 			},
 		)
 		.refine(

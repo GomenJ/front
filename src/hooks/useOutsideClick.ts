@@ -1,10 +1,5 @@
 import { useRef, useEffect } from "react";
 
-// type UseOutsideClick<T> = (
-//   close: () => void,
-//   listenCapturing?: boolean,
-// ) => React.MutableRefObject<T | null>;
-
 export const useOutsideClick = <T extends HTMLElement>(
 	close: () => void,
 	listenCapturing = true,
