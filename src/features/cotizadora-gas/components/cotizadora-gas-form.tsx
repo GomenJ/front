@@ -42,7 +42,7 @@ import {
 } from "@/components/ui/command";
 
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { cotizadoraGasFormSchema } from "../schemas/cotizadora-gas-form-schema";
 import { useCotizadoraStore } from "../stores/cotizadora-store";
@@ -54,6 +54,7 @@ import { useAuthStore } from "@/stores/auth-store";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useFeeQuery } from "../hooks/use-fee-query";
 import { useCommissionStore } from "@/stores/comission-store";
+import { Loader } from "@/components/loader";
 
 type CotizadoraGasFormProps = {
 	handleNextStep: () => void;
@@ -64,6 +65,8 @@ export const CotizadoraGasForm = ({
 }: CotizadoraGasFormProps) => {
 	const { hidden, percentage } = useCommissionStore();
 	const [selectedField, setSelectedField] = useState<string | null>(null);
+	// const cotizadoraValues = useCotizadoraStore((state) => state);
+
 	const formValues = useCotizadoraStore((state) => state);
 	const [openCalendar, setOpenCalendar] = useState(false);
 	const [comision, setComision] = useState(false);
@@ -71,6 +74,12 @@ export const CotizadoraGasForm = ({
 	const [invoiceArray, setInvoiceArray] = useState<CotizadoraGas[]>(
 		formValues.data || [],
 	);
+	const [isLoadingForm, setIsLoadingForm] = useState(true);
+	useEffect(() => {
+		setTimeout(() => {
+			setIsLoadingForm(false);
+		}, 1000);
+	}, [isLoadingForm]);
 
 	const { mutate, isGettingFee } = useFeeQuery();
 	const [gasData, setGasData] = useState<{
@@ -118,18 +127,33 @@ export const CotizadoraGasForm = ({
 
 	function onSubmit(values: z.infer<typeof cotizadoraGasFormSchema>) {
 		// ✅ This will be type-safe and validated.
-		setCotizadoraValues({ ...formValues, ...values, data: invoiceArray });
+		setCotizadoraValues({
+			...formValues,
+			...values,
+			data: invoiceArray,
+		});
 		const meses = Number(values.period) + 1;
+		console.log("meses", meses);
 
 		mutate(
 			{ volume: Number(values.volume.replaceAll(",", "")), meses },
 			{
 				onSuccess: () => {
+					// formValues.fee
 					handleNextStep();
 				},
 			},
 		);
 	}
+
+	if (isLoadingForm) {
+		return (
+			<>
+				<Loader />
+			</>
+		);
+	}
+
 	return (
 		<>
 			<Form {...form}>
@@ -447,7 +471,7 @@ export const CotizadoraGasForm = ({
 													field.onChange(e);
 													setComision(e as boolean);
 												}}
-												className="peer border-primary ring-offset-background focus-visible:ring-ring data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground h-4 h-5 w-4 w-5 shrink-0 rounded-sm border focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+												className="peer border-primary ring-offset-background focus-visible:ring-ring data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground h-4 w-4 shrink-0 rounded-sm border focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
 											/>
 										</FormControl>
 										<FormMessage />

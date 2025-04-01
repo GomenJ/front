@@ -26,6 +26,7 @@ export const useCotizadoraStore = create<CotizadoraState & CotizadoraAction>()(
 		percantage: "",
 		fee: null,
 		data: [],
+		chartData: [],
 
 		setCotizadoraValues: (values) => set(() => ({ ...values })),
 		setFee: (fee) => set(() => ({ fee })),
@@ -40,6 +41,7 @@ export const useCotizadoraStore = create<CotizadoraState & CotizadoraAction>()(
 				percantage: "",
 				fee: null,
 				data: [],
+				chartData: [],
 			})),
 	}),
 );

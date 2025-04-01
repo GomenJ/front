@@ -200,7 +200,7 @@ export const CotizadoraGasInvoice = ({
 							<Text
 								style={styles.table_header_row}
 							>{`${startDate} a ${endDate}`}</Text>
-							<Text style={styles.table_header_row}>${averagePrice}</Text>
+							<Text style={styles.table_header_row}>${averagePrice} USD</Text>
 							<Text style={styles.table_header_row}>
 								{format(new Date(), "dd 'de' MMMM 'de' yyyy", {
 									locale: es,

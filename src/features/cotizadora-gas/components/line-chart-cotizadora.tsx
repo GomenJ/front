@@ -13,11 +13,16 @@ import { format } from "date-fns";
 
 export const LineChartCotizadora = () => {
 	const data = useCotizadoraStore((state) => state.data);
+	const fee = useCotizadoraStore((state) => state.fee);
+	// const chartData = useCotizadoraStore((state) => state.chartData);
+	// console.log("fee", fee);
+	// console.log("chartData", chartData);
 	// Transform the data
 	const newData = data.map((item) => ({
 		flow_date: format(new Date(item.flow_date), "yyyy-MM-dd"), // Format date
-		total_precio: Number(item.precio), // Convert to number
+		total_precio: Number(item.precio) + Number(fee?.fee), // Convert to number
 	}));
+	console.log(newData);
 
 	return (
 		<LineChart
