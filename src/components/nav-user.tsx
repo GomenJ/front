@@ -15,6 +15,7 @@ import { Button } from "./ui/button";
 import { useNavigate } from "@tanstack/react-router";
 import { useAuthStore } from "@/stores/auth-store";
 import { HideComission } from "./hide-comission";
+import { useCotizadoraStore } from "@/features/cotizadora-gas/stores/cotizadora-store";
 
 export function NavUser({
 	user,
@@ -22,11 +23,12 @@ export function NavUser({
 	user: {
 		name: string;
 		email?: string;
-		avatar: string;
+		avatar?: string;
 	};
 }) {
 	const navigate = useNavigate();
 	const logout = useAuthStore((state) => state.logout);
+	const reset = useCotizadoraStore((state) => state.reset);
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
@@ -75,6 +77,7 @@ export function NavUser({
 					<DropdownMenuItem
 						onClick={() => {
 							logout();
+							reset();
 						}}
 					>
 						<LogOut />

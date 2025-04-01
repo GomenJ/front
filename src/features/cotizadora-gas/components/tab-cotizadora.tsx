@@ -31,15 +31,19 @@ export const TabCotizadora = ({
 	const data = cotizadoraValues.data.slice(0, months);
 
 	return (
-		<Tabs defaultValue="curva" className="mx-auto mb-10 w-[1/2] px-28">
+		<Tabs defaultValue="statistics" className="mx-auto mb-10 w-[1/2] px-28">
 			<TabsList className="mx-auto">
+				<TabsTrigger value="statistics">Line chart</TabsTrigger>
 				<TabsTrigger value="curva">Tabla curva forward</TabsTrigger>
 				<TabsTrigger value="preview_pdf">PDF Preview</TabsTrigger>
-				<TabsTrigger value="statistics">Line chart</TabsTrigger>
 				{user?.role === "admin" ? (
 					<TabsTrigger value="fee">Tabla de Fee</TabsTrigger>
 				) : null}
 			</TabsList>
+			<TabsContent value="statistics">
+				<LineChartCotizadora />
+			</TabsContent>
+
 			<TabsContent value="curva">
 				{cotizadoraValues.data.length > 0 ? <GasTable data={data} /> : null}
 			</TabsContent>
@@ -62,9 +66,6 @@ export const TabCotizadora = ({
 					<FeeTable />
 				</TabsContent>
 			) : null}
-			<TabsContent value="statistics">
-				<LineChartCotizadora />
-			</TabsContent>
 		</Tabs>
 	);
 };

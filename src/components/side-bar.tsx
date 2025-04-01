@@ -21,8 +21,8 @@ export const Sidebar = () => {
 				<NavUser
 					user={{
 						name: userName,
-						avatar:
-							"https://avatars.dicebear.com/api/avataaars/carlos-nava.svg",
+						// avatar:
+						// 	"https://avatars.dicebear.com/api/avataaars/carlos-nava.svg",
 					}}
 				/>
 			</div>

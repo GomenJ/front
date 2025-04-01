@@ -43,6 +43,7 @@ import {
 } from "@/components/ui/command";
 
 import { useFeeQuery } from "../hooks/use-fee-query";
+import { useCommissionStore } from "@/stores/comission-store";
 
 type CotizadoraInvoiceFormProps = {
 	handleBackStep: () => void;
@@ -53,6 +54,8 @@ export const CotizadoraInvoiceForm = ({
 }: CotizadoraInvoiceFormProps) => {
 	const [isLoadingForm, setIsLoadingForm] = useState(true);
 	const cotizadoraValues = useCotizadoraStore((state) => state);
+	const { hidden } = useCommissionStore();
+
 	const reset = useCotizadoraStore((state) => state.reset);
 	const user = useAuthStore((state) => state.user);
 	const period = Number(cotizadoraValues.period) + 1;
@@ -68,6 +71,7 @@ export const CotizadoraInvoiceForm = ({
 			clientName: cotizadoraValues.clientName,
 			period: cotizadoraValues.period,
 			volume: cotizadoraValues.volume,
+			percantage: cotizadoraValues.percantage,
 		},
 	});
 
@@ -318,6 +322,31 @@ export const CotizadoraInvoiceForm = ({
 							</FormItem>
 						)}
 					/>
+					{!hidden ? (
+						<FormField
+							control={form.control}
+							name="percantage"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className="font-semibold">
+										Porcentaje de comisión
+									</FormLabel>
+									<FormControl>
+										<Input
+											type="text"
+											placeholder="0"
+											readOnly
+											{...field}
+											className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+											autoComplete="off"
+										/>
+									</FormControl>
+									{/* <FormDescription>Este campo se puede editar</FormDescription> */}
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+					) : null}
 
 					{user?.role === "admin" ? (
 						<div>
@@ -394,6 +423,16 @@ export const CotizadoraInvoiceForm = ({
 						<Button
 							disabled={isGettingFee}
 							onClick={() => {
+								// indice
+								// trade_date
+								// start_date
+								// periodo
+								// volumen
+								// porcentaje_comision
+								// nombre_cliente
+								// fee
+								// fee_version
+								// usuario
 								// setIsLoadingForm(true);
 							}}
 						>

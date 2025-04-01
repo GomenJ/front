@@ -11,6 +11,7 @@ type Fee = {
 
 export const useFeeQuery = () => {
 	const setFee = useCotizadoraStore((state) => state.setFee); // Zustand store
+	const addChartData = useCotizadoraStore((state) => state.addChartData); // Zustand store
 	const queryClient = useQueryClient();
 
 	const { mutate, isPending: isGettingFee } = useMutation({
@@ -21,6 +22,7 @@ export const useFeeQuery = () => {
 				queryKey: ["fee"],
 			});
 			setFee(fee);
+			addChartData(fee);
 		},
 		onError: (err) => {
 			toast.error(String(err));

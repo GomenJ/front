@@ -40,4 +40,21 @@ export const cotizadoraInvoiceFormSchema = z.object({
 			},
 		),
 	clientName: z.string().refine((client) => client.length > 0),
+	percantage: z
+		.string()
+		.default("0")
+		.refine((fee) => fee.length > 0)
+		.refine(
+			(volume) => {
+				const newNumber = volume.replace(/,/g, "");
+				return (
+					Number(newNumber) >= 0 &&
+					Number(newNumber) < 100 &&
+					!isNaN(Number(newNumber))
+				);
+			},
+			{
+				message: "Ingrese un número mayor a 0",
+			},
+		),
 });

@@ -8,6 +8,8 @@ type CotizadoraState = z.infer<typeof cotizadoraGasFormSchema> & {
 	data: CotizadoraGas[];
 	fee: { fee: FeeType } | null;
 	setFee: (fee: { fee: FeeType }) => void;
+	chartData: { fee: FeeType }[];
+	addChartData: (newData: { fee: FeeType }) => void;
 };
 
 type CotizadoraAction = {
@@ -30,6 +32,10 @@ export const useCotizadoraStore = create<CotizadoraState & CotizadoraAction>()(
 
 		setCotizadoraValues: (values) => set(() => ({ ...values })),
 		setFee: (fee) => set(() => ({ fee })),
+		addChartData: (newData: { fee: FeeType }) =>
+			set((state) => ({
+				chartData: [...state.chartData, newData],
+			})),
 		reset: () =>
 			set(() => ({
 				index: "",

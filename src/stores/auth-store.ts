@@ -26,6 +26,7 @@ const fakeUsers: User[] = [
 	{ username: "miguel", password: "UG3F8$NXejn*fZTxRD", role: "user" },
 	{ username: "alonso", password: "Strs!e3umK@0C&xpLq", role: "user" },
 	{ username: "martin", password: "hgSNa$nih6Xp&3bd#W", role: "user" },
+	{ username: "diego", password: "miSqXFdSW4$^D5gMu4", role: "user" },
 ];
 
 export const useAuthStore = create<AuthState>()(

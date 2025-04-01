@@ -37,7 +37,7 @@ export const HideComission = () => {
 					}}
 					className="w-full"
 				>
-					Fee
+					Comisión
 				</p>
 			</DialogTrigger>
 			<DialogContent

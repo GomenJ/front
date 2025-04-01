@@ -133,13 +133,11 @@ export const CotizadoraGasForm = ({
 			data: invoiceArray,
 		});
 		const meses = Number(values.period) + 1;
-		console.log("meses", meses);
 
 		mutate(
 			{ volume: Number(values.volume.replaceAll(",", "")), meses },
 			{
 				onSuccess: () => {
-					// formValues.fee
 					handleNextStep();
 				},
 			},
@@ -419,7 +417,7 @@ export const CotizadoraGasForm = ({
 								<FormControl>
 									<Input
 										type="text"
-										placeholder="15,000 MMBTu/mes"
+										placeholder="30,000 MMBTu/mes"
 										{...field}
 										disabled={!form.getValues("tradeDate")}
 										className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
